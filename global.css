@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 @import 'tailwindcss';
 @import 'uniwind';
@@ -6,160 +6,158 @@
 @import 'heroui-native/styles';
 
 /*
- * HeroUI Native + Uniwind tokens
- *
- * Component variants compile to Tailwind utilities (e.g. Button primary → bg-accent,
- * Button secondary → bg-default, Alert → text-foreground). Those classes only work when
- * the matching Tailwind color tokens exist.
- *
- * heroui-native/styles/theme.css maps semantic tokens to --color-* utilities.
- * Uncomment the HeroUI default theme block below to override.
- *
- * Docs: https://docs.uniwind.dev/theming/global-css
- *       https://heroui.com/docs/native/getting-started/colors
+ * Relay design system
+ * Premium minimal glassmorphism. Dark is the default; light is a full alternate.
+ * Brand: --accent #2563FF, secondary #6B4EFF, accent-soft #38BDF8.
  */
 
-/*
 @layer base {
-  HeroUI Default Theme
   :root {
-    color-scheme: light;
+    color-scheme: dark;
 
-    == Common Variables ==
-
-    Primitive Colors (Do not change between light and dark)
     --white: oklch(100% 0 0);
     --black: oklch(0% 0 0);
     --snow: oklch(0.9911 0 0);
     --eclipse: oklch(0.2103 0.0059 285.89);
 
-    Spacing scale
     --spacing: 0.25rem;
-
-    Border
     --border-width: 1px;
     --field-border-width: 0px;
     --disabled-opacity: 0.5;
-
-    Ring offset - Used for focus ring
     --ring-offset-width: 2px;
-
-    Cursor
     --cursor-interactive: pointer;
     --cursor-disabled: not-allowed;
 
-    Radius
-    --radius: 0.5rem;
-    --field-radius: calc(var(--radius) * 1.5);
+    /* Relay uses generously rounded corners (~24px) */
+    --radius: 1rem;
+    --field-radius: 1.25rem;
 
-    == Light Theme Variables ==
+    /* ===== Dark (default) ===== */
+    --background: oklch(0.19 0.03 265);
+    --foreground: var(--snow);
 
-    Base Colors
-    --background: oklch(0.9702 0 0);
-    --foreground: var(--eclipse);
-
-    Surface
-    --surface: var(--white);
+    --surface: oklch(0.24 0.03 265);
     --surface-foreground: var(--foreground);
 
-    Overlay
-    --overlay: var(--white);
+    --overlay: oklch(0.26 0.03 265);
     --overlay-foreground: var(--foreground);
 
-    --muted: oklch(0.5517 0.0138 285.94);
-    --scrollbar: oklch(87.1% 0.006 286.286);
+    --muted: oklch(0.7 0.02 265);
+    --scrollbar: oklch(0.5 0.02 265);
 
-    --default: oklch(94% 0.001 286.375);
-    --default-foreground: var(--eclipse);
+    --default: oklch(0.3 0.03 265);
+    --default-foreground: var(--snow);
 
-    --accent: oklch(0.6204 0.195 253.83);
+    --accent: oklch(0.58 0.21 264);
     --accent-foreground: var(--snow);
 
-    Form Field Defaults - Colors
-    --field-background: var(--white);
-    --field-foreground: oklch(0.2103 0.0059 285.89);
+    --field-background: oklch(0.28 0.03 265);
+    --field-foreground: var(--foreground);
     --field-placeholder: var(--muted);
     --field-border: transparent;
 
-    Status Colors
-    --success: oklch(0.7329 0.1935 150.81);
-    --success-foreground: var(--eclipse);
+    --success: oklch(0.72 0.18 150);
+    --success-foreground: var(--snow);
 
-    --warning: oklch(0.7819 0.1585 72.33);
+    --warning: oklch(0.78 0.15 72);
     --warning-foreground: var(--eclipse);
 
-    --danger: oklch(0.6532 0.2328 25.74);
+    --danger: oklch(0.63 0.23 25);
     --danger-foreground: var(--snow);
 
-    Component Colors
-    --segment: var(--white);
-    --segment-foreground: var(--eclipse);
-
-    Misc Colors
-    --border: oklch(92% 0.004 286.32);
-    --separator: oklch(92% 0.004 286.32);
-    --focus: var(--accent);
-    --link: var(--foreground);
-
-    Backdrop
-    --backdrop: rgba(0, 0, 0, 0.5);
-
-    Shadows
-    --surface-shadow:
-      0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06),
-      0 0 1px 0 rgba(0, 0, 0, 0.06);
-    --overlay-shadow: 0 4px 16px 0 rgba(24, 24, 27, 0.08), 0 8px 24px 0 rgba(24, 24, 27, 0.09);
-    --field-shadow:
-      0 2px 4px 0 rgba(0, 0, 0, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.06),
-      0 0 1px 0 rgba(0, 0, 0, 0.06);
-    --skeleton-animation: shimmer;
-  }
-
-  .dark,
-  [data-theme="dark"] {
-    color-scheme: dark;
-    == Dark Theme Variables ==
-
-    Base Colors
-    --background: oklch(12% 0.005 285.823);
-    --foreground: var(--snow);
-
-    --surface: oklch(0.2103 0.0059 285.89);
-    --surface-foreground: var(--foreground);
-
-    --overlay: oklch(0.22 0.0059 285.89);
-    --overlay-foreground: var(--foreground);
-
-    --muted: oklch(70.5% 0.015 286.067);
-    --scrollbar: oklch(70.5% 0.015 286.067);
-
-    --default: oklch(27.4% 0.006 286.033);
-    --default-foreground: var(--snow);
-
-    --field-background: var(--default);
-    --field-foreground: var(--foreground);
-
-    --warning: oklch(0.8203 0.1388 76.34);
-    --warning-foreground: var(--eclipse);
-
-    --danger: oklch(0.594 0.1967 24.63);
-    --danger-foreground: var(--snow);
-
-    --segment: oklch(0.3964 0.01 285.93);
+    --segment: oklch(0.3 0.03 265);
     --segment-foreground: var(--foreground);
 
-    --border: oklch(22% 0.006 286.033);
-    --separator: oklch(22% 0.006 286.033);
+    --border: oklch(0.32 0.03 265);
+    --separator: oklch(0.3 0.03 265);
     --focus: var(--accent);
-    --link: var(--foreground);
+    --link: var(--accent);
 
-    --backdrop: rgba(0, 0, 0, 0.6);
+    --backdrop: rgba(4, 8, 20, 0.6);
 
     --surface-shadow: 0 0 0 0 transparent inset;
     --overlay-shadow: 0 0 0 0 transparent inset;
     --field-shadow: 0 0 0 0 transparent inset;
+    --skeleton-animation: shimmer;
+  }
+
+  /* Custom Relay color utilities (bg-* / text-* / border-*) */
+  @variant dark {
+    :root {
+      --color-background: #0b1020;
+      --color-surface: #151b30;
+      --color-surface-2: #1c2440;
+      --color-foreground: #f8fafc;
+      --color-foreground-muted: #94a3b8;
+      --color-border: #26304d;
+      --color-brand: #2563ff;
+      --color-brand-2: #6b4eff;
+      --color-accent-sky: #38bdf8;
+      --color-success: #22c55e;
+      --color-warning: #f59e0b;
+      --color-error: #ef4444;
+      --color-glass: rgba(21, 27, 48, 0.72);
+      --color-glass-border: rgba(148, 163, 184, 0.14);
+    }
+  }
+  @variant light {
+    :root {
+      --color-background: #f8fafc;
+      --color-surface: #ffffff;
+      --color-surface-2: #f1f5f9;
+      --color-foreground: #0b1020;
+      --color-foreground-muted: #64748b;
+      --color-border: #e2e8f0;
+      --color-brand: #2563ff;
+      --color-brand-2: #6b4eff;
+      --color-accent-sky: #0ea5e9;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+      --color-error: #dc2626;
+      --color-glass: rgba(255, 255, 255, 0.72);
+      --color-glass-border: rgba(15, 16, 32, 0.08);
+    }
+  }
+
+  [data-theme='light'],
+  .light {
+    color-scheme: light;
+
+    --background: oklch(0.98 0.005 265);
+    --foreground: var(--eclipse);
+
+    --surface: var(--white);
+    --surface-foreground: var(--foreground);
+
+    --overlay: var(--white);
+    --overlay-foreground: var(--foreground);
+
+    --muted: oklch(0.55 0.02 265);
+    --scrollbar: oklch(0.85 0.01 265);
+
+    --default: oklch(0.95 0.005 265);
+    --default-foreground: var(--eclipse);
+
+    --accent: oklch(0.58 0.21 264);
+    --accent-foreground: var(--snow);
+
+    --field-background: var(--white);
+    --field-foreground: var(--eclipse);
+    --field-placeholder: var(--muted);
+    --field-border: transparent;
+
+    --segment: var(--white);
+    --segment-foreground: var(--eclipse);
+
+    --border: oklch(0.92 0.006 265);
+    --separator: oklch(0.92 0.006 265);
+
+    --backdrop: rgba(11, 16, 32, 0.4);
+
+    --surface-shadow: 0 2px 8px 0 rgba(15, 23, 42, 0.06), 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --overlay-shadow: 0 8px 30px 0 rgba(15, 23, 42, 0.12);
+    --field-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
   }
 }
-*/
 
 @source './node_modules/heroui-native/lib';

@@ -7,6 +7,7 @@ import {
   Inter_500Medium,
   Inter_600SemiBold,
   Inter_700Bold,
+  Inter_800ExtraBold,
   useFonts,
 } from '@expo-google-fonts/inter';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
@@ -24,6 +25,7 @@ import {
 
 import { initPostHog } from '@/lib/posthog';
 import { reportErrorToParent } from '@/lib/reportPreviewError';
+import { useSettingsStore } from '@/lib/stores/settingsStore';
 
 /**
  * Custom ErrorBoundary that reports React render errors to the parent window (Bilt preview iframe)
@@ -41,10 +43,19 @@ function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export { ErrorBoundary };
 
-// Starter is light-only by default. Remove this when implementing requested dark mode.
-Uniwind.setTheme('light');
+// Relay defaults to dark; the persisted preference is applied in ThemeBootstrap.
+Uniwind.setTheme('dark');
 
 void SplashScreen.preventAutoHideAsync();
+
+/** Applies the user's persisted theme preference on mount. */
+function ThemeBootstrap() {
+  const themePref = useSettingsStore((s) => s.theme);
+  useEffect(() => {
+    Uniwind.setTheme(themePref);
+  }, [themePref]);
+  return null;
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -52,6 +63,7 @@ export default function RootLayout() {
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
+    Inter_800ExtraBold,
   });
 
   // Report uncaught JS errors and unhandled promise rejections to parent (Bilt preview iframe)
@@ -91,7 +103,7 @@ export default function RootLayout() {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href =
-          'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
+          'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';
         link.crossOrigin = 'anonymous';
         document.head.appendChild(link);
       }
@@ -135,8 +147,17 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HeroUINativeProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ title: 'Habits', headerShown: false }} />
+        <ThemeBootstrap />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="welcome" />
+          <Stack.Screen name="auth" />
+          <Stack.Screen name="connect-email" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="conversation/[id]" options={{ presentation: 'card' }} />
+          <Stack.Screen name="contact/[id]" options={{ presentation: 'card' }} />
+          <Stack.Screen name="search" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
         </Stack>
       </HeroUINativeProvider>
     </GestureHandlerRootView>

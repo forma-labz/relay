@@ -1,160 +1,57 @@
-# Welcome to your Bilt project
+# Relay
 
-[![Built with Bilt](https://img.shields.io/endpoint?url=https%3A%2F%2Fapp.bilt.me%2Fapi%2Fbadge)](https://bilt.me)
+**Chat Fast. Email Professionally.**
 
-## Project info
+Relay is a premium communication platform that unifies encrypted messaging,
+email, a lightweight CRM, an AI copilot, and secure document management into a
+single Expo React Native app. Built with a glassmorphism, dark-first design
+language inspired by Apple, Linear, Superhuman, Arc, and Notion.
 
-**Preview URL**: https://app.bilt.me/project/24c80047-6993-45aa-bcf3-6f19ea5bf7a4/preview
+> This build is a **production-ready front end with realistic mocked data**.
+> Auth providers, email sync (Gmail/Outlook/IMAP), Signal encryption, and OpenAI
+> are simulated and ready to wire to a real backend (Supabase + OpenAI recommended).
 
-**Project ID**: `24c80047-6993-45aa-bcf3-6f19ea5bf7a4`
+## Tech stack
 
-## How can I edit this app?
+- Expo Router 6 (file-based routing) · React 19 · React Native 0.81
+- TypeScript throughout
+- HeroUI Native + Uniwind (Tailwind for RN) for UI and theming
+- Zustand for state (with AsyncStorage persistence where needed)
+- Reanimated 4 + Gesture Handler for animation
+- FlashList for virtualized lists
+- Lucide icons · expo-blur (glass) · expo-linear-gradient · expo-haptics
 
-There are several ways of editing your application.
+## Folder structure
 
-**Use Bilt**
-
-Simply visit your [Bilt Project](https://app.bilt.me/agent/24c80047-6993-45aa-bcf3-6f19ea5bf7a4) and start sending messages. Describe what you want to change, add, or fix in natural language.
-
-Changes made via Bilt are instant - just send a message and your app updates.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can export the source code from Bilt and make changes directly.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Export and clone your Bilt project.
-# (Download source from Bilt or connect to your git repo)
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm install
-
-# Step 4: Start the Expo development server.
-npx expo start
+```
+app/                         Expo Router screens
+  index.tsx                  Animated splash + routing gate
+  welcome.tsx                Onboarding carousel
+  auth.tsx                   Sign-in (Google/Microsoft/Apple/Phone/Biometric)
+  connect-email.tsx          Link Gmail / Outlook / IMAP
+  search.tsx                 Global search (modal)
+  notifications.tsx          Unified notifications (modal)
+  conversation/[id].tsx      Unified chat + email thread
+  contact/[id].tsx           Full CRM contact profile
+  (tabs)/                    Inbox · Contacts · Compose · Files · AI · Settings
+components/                  Reusable UI (GlassCard, GradientBackground, RelayLogo, …)
+lib/
+  types.ts                   Domain models
+  mockData.ts                Seed data
+  stores/                    Zustand stores (inbox, contacts, files, ai, settings, …)
+  fileIcon.ts, haptics.ts, utils.ts
+global.css                   Design tokens (dark default + light theme)
 ```
 
-Scan the QR code with Expo Go on your phone to see your app running locally.
+## Theming
 
-**Edit a file directly in GitHub**
+`global.css` owns the palette. Dark is the default; a light theme and `system`
+option are toggled from **Settings → Appearance** and persisted. Brand color is
+`--accent` (#2563FF) with a #6B4EFF secondary and #38BDF8 sky accent.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Wiring a real backend
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- React Native
-- Expo
-- TypeScript
-- AsyncStorage (local data persistence)
-- Expo Router (navigation)
-
-All generated automatically by Bilt from your natural language instructions.
-
-## How can I test this project?
-
-**Option 1: Instant Preview (Recommended)**
-
-Open the preview URL in your browser: `https://app.bilt.me/project/24c80047-6993-45aa-bcf3-6f19ea5bf7a4/preview`
-
-Scan the QR code with Expo Go ([iOS](https://apps.apple.com/app/expo-go/id982107779) | [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)) on your phone.
-
-**Option 2: Run Locally**
-
-```sh
-npm install
-npx expo start
-```
-
-Then scan the QR code with Expo Go.
-
-## How can I deploy this project?
-
-Go to your [Bilt Project](https://app.bilt.me/agent/24c80047-6993-45aa-bcf3-6f19ea5bf7a4), after that go to Settings -> App Store.
-
-### Deploy with Bilt
-
-Simply send a message to your Bilt project: "Deploy this app to production"
-
-Bilt will handle the build and provide you with download links or submission-ready builds.
-
-## How can I make changes to my app?
-
-**Via Bilt (Easiest)**
-
-Visit your [Bilt Project](https://app.bilt.me/agent/24c80047-6993-45aa-bcf3-6f19ea5bf7a4) and send a message describing what you want:
-
-- "Add a dark mode toggle"
-- "Change the button color to blue"
-- "Add a new screen for user settings"
-- "Fix the navigation bar spacing"
-
-Bilt understands natural language and updates your app automatically.
-
-**Via Code**
-
-Export the source, make changes in your IDE, and test locally with `npx expo start`.
-
-## Can I use this with the MCP protocol?
-
-Yes! Bilt is available as a remote MCP server at `https://mcp.bilt.me/mcp`.
-
-Connect any MCP-compatible AI agent (Claude Desktop, OpenClaw, etc.) to programmatically build and modify mobile apps.
-
-**Example MCP integration:**
-
-```json
-{
-  "mcpServers": {
-    "bilt": {
-      "transport": {
-        "type": "sse",
-        "url": "https://mcp.bilt.me/mcp/sse",
-        "headers": {
-          "Authorization": "Bearer YOUR_API_KEY"
-        }
-      }
-    }
-  }
-}
-```
-
-Read more:
-
-- [Bilt MCP Documentation](https://bilt.me/docs)
-- [MCP Registry](https://registry.modelcontextprotocol.io/v0.1/servers/io.github.buildingapplications%2Fmcp/versions/latest)
-
-## Need help?
-
-- 📚 [Bilt Documentation](https://bilt.me/docs)
-- 💬 [Discord Community](https://discord.gg/3FqNgmSYdZ)
-- 🐦 [Twitter Updates](https://twitter.com/biltmeanapp)
-- 📧 Email: support@bilt.me
-
----
-
-<div align="center">
-
-**Built by AI. No code required.** ✨
-
-[Try Bilt](https://bilt.me) • [View Docs](https://bilt.me/docs) • [Docs MCP Server](https://bilt.me/docs/mcp)
-
-</div>
+- **Auth / DB / Storage:** connect Supabase, then replace the simulated flows in
+  `app/auth.tsx` and the seed data in `lib/mockData.ts` with live queries.
+- **AI:** swap the canned responses in `lib/stores/aiStore.ts` for OpenAI calls.
+- **Email:** integrate Gmail/Outlook/IMAP sync behind the inbox store.

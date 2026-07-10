@@ -269,18 +269,31 @@ function MessageItem({
 }
 
 function VoiceNote({ mine, durationSec }: { mine: boolean; durationSec: number }) {
-  const bars = [8, 14, 10, 18, 12, 20, 9, 16, 11, 15, 8, 13];
+  const bars = [
+    ['a', 8],
+    ['b', 14],
+    ['c', 10],
+    ['d', 18],
+    ['e', 12],
+    ['f', 20],
+    ['g', 9],
+    ['h', 16],
+    ['i', 11],
+    ['j', 15],
+    ['k', 8],
+    ['l', 13],
+  ] as const;
   const color = mine ? '#fff' : '#38BDF8';
   return (
     <View className="flex-row items-center gap-2 py-0.5">
       <Play color={color} size={16} fill={color} />
       <View className="flex-row items-center gap-0.5">
-        {bars.map((h, i) => (
+        {bars.map(([id, height]) => (
           <View
-            key={i}
+            key={id}
             style={{
               width: 2.5,
-              height: h,
+              height,
               borderRadius: 2,
               backgroundColor: color,
               opacity: 0.85,

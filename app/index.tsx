@@ -101,8 +101,8 @@ export default function SplashScreen() {
     <View style={StyleSheet.absoluteFill}>
       <GradientBackground>
         <View className="flex-1 items-center justify-center">
-          {PARTICLES.map((p, i) => (
-            <Particle key={i} {...p} />
+          {PARTICLES.map((p) => (
+            <Particle key={`${p.x}:${p.y}`} {...p} />
           ))}
 
           <Animated.View

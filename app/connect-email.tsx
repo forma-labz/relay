@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Check, ChevronRight, Mail, Plus, Server } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,7 +11,9 @@ import { GlassCard } from '@/components/GlassCard';
 import { GradientBackground } from '@/components/GradientBackground';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { haptics } from '@/lib/haptics';
+import { env } from '@/lib/env';
 import { useOnboardingStore } from '@/lib/stores/onboardingStore';
+import { connectEmailProvider } from '@/services/emailAccounts';
 
 function GmailGlyph() {
   return (
@@ -65,15 +67,31 @@ export default function ConnectEmail() {
   const [connecting, setConnecting] = useState<string | null>(null);
   const [connected, setConnected] = useState<string[]>([]);
 
-  const connect = (id: string) => {
+  const connect = async (id: ProviderDef['id']) => {
     if (connecting || connected.includes(id)) return;
     haptics.medium();
     setConnecting(id);
-    setTimeout(() => {
+    try {
+      if (__DEV__ && env.demoMode) {
+        await new Promise((resolve) => setTimeout(resolve, 700));
+      } else if (id === 'imap') {
+        throw new Error(
+          'Custom IMAP/SMTP credentials must be entered in Settings after your Relay backend is configured.',
+        );
+      } else {
+        await connectEmailProvider(id);
+      }
       haptics.success();
-      setConnecting(null);
       setConnected((prev) => [...prev, id]);
-    }, 1200);
+    } catch (error) {
+      haptics.error();
+      Alert.alert(
+        'Unable to connect account',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setConnecting(null);
+    }
   };
 
   const finish = () => {

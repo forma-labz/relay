@@ -80,10 +80,10 @@ export default function Welcome() {
           scrollEventThrottle={16}
           className="mt-6 flex-1"
         >
-          {SLIDES.map((s, i) => {
+          {SLIDES.map((s) => {
             const Icon = s.icon;
             return (
-              <View key={i} style={{ width }} className="items-center justify-center px-8">
+              <View key={s.title} style={{ width }} className="items-center justify-center px-8">
                 <Animated.View entering={FadeInDown.duration(500)} className="w-full items-center">
                   <View
                     style={{ backgroundColor: s.color + '22' }}
@@ -110,9 +110,9 @@ export default function Welcome() {
         </ScrollView>
 
         <View className="mb-6 flex-row justify-center gap-2">
-          {SLIDES.map((_, i) => (
+          {SLIDES.map((slide, i) => (
             <Pressable
-              key={i}
+              key={slide.title}
               onPress={() => {
                 haptics.selection();
                 scrollRef.current?.scrollTo({ x: i * width, animated: true });

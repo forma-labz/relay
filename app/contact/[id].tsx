@@ -261,7 +261,7 @@ export default function ContactProfile() {
               const Icon = item.icon;
               const last = i === TIMELINE.length - 1;
               return (
-                <View key={i} className="flex-row gap-3">
+                <View key={`${item.label}:${item.when}`} className="flex-row gap-3">
                   <View className="items-center">
                     <View
                       style={{ backgroundColor: item.color + '1F' }}

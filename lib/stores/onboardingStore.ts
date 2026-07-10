@@ -7,6 +7,7 @@ interface OnboardingState {
   emailConnected: boolean;
   hydrated: boolean;
   completeAuth: () => void;
+  setAuthenticated: (authed: boolean) => void;
   completeEmail: () => void;
   signOut: () => void;
 }
@@ -18,13 +19,15 @@ export const useOnboardingStore = create<OnboardingState>()(
       emailConnected: false,
       hydrated: false,
       completeAuth: () => set({ authed: true }),
+      setAuthenticated: (authed) => set({ authed }),
       completeEmail: () => set({ emailConnected: true }),
       signOut: () => set({ authed: false, emailConnected: false }),
     }),
     {
-      name: 'relay-onboarding',
+      name: 'relay-onboarding-v2',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (s) => ({ authed: s.authed, emailConnected: s.emailConnected }),
+      // Auth sessions are persisted by Supabase in Keychain/Keystore, never AsyncStorage.
+      partialize: (s) => ({ emailConnected: s.emailConnected }),
       onRehydrateStorage: () => () => {
         useOnboardingStore.setState({ hydrated: true });
       },

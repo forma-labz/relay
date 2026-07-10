@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { Apple, Fingerprint, Phone, ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,6 +12,12 @@ import { RelayLogo } from '@/components/RelayLogo';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { haptics } from '@/lib/haptics';
 import { useOnboardingStore } from '@/lib/stores/onboardingStore';
+import {
+  authenticateWithBiometrics,
+  canUseDemoMode,
+  signInWithApple,
+  signInWithOAuth,
+} from '@/services/auth';
 
 function GoogleGlyph() {
   return (
@@ -84,15 +90,36 @@ export default function Auth() {
   const completeAuth = useOnboardingStore((s) => s.completeAuth);
   const [pending, setPending] = useState<Provider | null>(null);
 
-  const signIn = (provider: Provider) => {
+  const signIn = async (provider: Provider) => {
     if (pending) return;
     haptics.medium();
     setPending(provider);
-    setTimeout(() => {
+    try {
+      if (canUseDemoMode()) {
+        await new Promise((resolve) => setTimeout(resolve, 700));
+      } else if (provider === 'google') {
+        await signInWithOAuth('google');
+      } else if (provider === 'microsoft') {
+        await signInWithOAuth('azure');
+      } else if (provider === 'apple') {
+        await signInWithApple();
+      } else if (provider === 'biometric') {
+        await authenticateWithBiometrics();
+      } else {
+        throw new Error('Phone sign-in requires a configured Supabase phone provider.');
+      }
       haptics.success();
       completeAuth();
       router.replace('/connect-email');
-    }, 1100);
+    } catch (error) {
+      haptics.error();
+      Alert.alert(
+        'Unable to sign in',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setPending(null);
+    }
   };
 
   return (

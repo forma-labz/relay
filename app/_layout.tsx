@@ -26,6 +26,7 @@ import {
 import { initPostHog } from '@/lib/posthog';
 import { reportErrorToParent } from '@/lib/reportPreviewError';
 import { useSettingsStore } from '@/lib/stores/settingsStore';
+import { AppProviders } from '@/providers/AppProviders';
 
 /**
  * Custom ErrorBoundary that reports React render errors to the parent window (Bilt preview iframe)
@@ -146,20 +147,22 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <HeroUINativeProvider>
-        <ThemeBootstrap />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="welcome" />
-          <Stack.Screen name="auth" />
-          <Stack.Screen name="connect-email" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="conversation/[id]" options={{ presentation: 'card' }} />
-          <Stack.Screen name="contact/[id]" options={{ presentation: 'card' }} />
-          <Stack.Screen name="search" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
-        </Stack>
-      </HeroUINativeProvider>
+      <AppProviders>
+        <HeroUINativeProvider>
+          <ThemeBootstrap />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="welcome" />
+            <Stack.Screen name="auth" />
+            <Stack.Screen name="connect-email" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="conversation/[id]" options={{ presentation: 'card' }} />
+            <Stack.Screen name="contact/[id]" options={{ presentation: 'card' }} />
+            <Stack.Screen name="search" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
+          </Stack>
+        </HeroUINativeProvider>
+      </AppProviders>
     </GestureHandlerRootView>
   );
 }

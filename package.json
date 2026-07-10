@@ -104,7 +104,8 @@
     "typescript": "~5.9.3"
   },
   "lint-staged": {
-    "*.{js,mjs,cjs,ts,tsx,json,css,md}": "oxfmt --write",
+    "*.{js,mjs,cjs,ts,tsx,css,md}": "oxfmt --write",
+    "{package,eas,tsconfig}.json": "oxfmt --write",
     "*.{ts,tsx}": "oxlint --type-aware --type-check"
   },
   "jest": {

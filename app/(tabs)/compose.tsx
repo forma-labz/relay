@@ -21,9 +21,9 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'heroui-native';
 
 import { GradientBackground } from '@/components/GradientBackground';
+import { RelayButton } from '@/components/RelayButton';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SegmentedControl } from '@/components/SegmentedControl';
 import { haptics } from '@/lib/haptics';
@@ -229,15 +229,21 @@ export default function ComposeScreen() {
             style={{ paddingBottom: insets.bottom + 10 }}
             className="border-glass-border bg-surface/80 flex-row gap-2 border-t px-4 pt-3"
           >
-            <Button variant="secondary" isIconOnly onPress={haptics.selection}>
+            <RelayButton
+              variant="secondary"
+              iconOnly
+              accessibilityLabel="Add attachment"
+              onPress={haptics.selection}
+            >
               <Paperclip color="#94A3B8" size={18} />
-            </Button>
-            <Button className="flex-1" onPress={sendNow}>
+            </RelayButton>
+            <RelayButton
+              className="flex-1"
+              label={scheduled ? 'Schedule' : mode === 'email' ? 'Send email' : 'Send message'}
+              onPress={sendNow}
+            >
               <Send color="#fff" size={17} />
-              <Button.Label>
-                {scheduled ? 'Schedule' : mode === 'email' ? 'Send email' : 'Send message'}
-              </Button.Label>
-            </Button>
+            </RelayButton>
           </View>
         </KeyboardAvoidingView>
       </GradientBackground>

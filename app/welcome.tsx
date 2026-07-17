@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'heroui-native';
 
 import { GlassCard } from '@/components/GlassCard';
 import { GradientBackground } from '@/components/GradientBackground';
+import { RelayButton } from '@/components/RelayButton';
 import { RelayLogo } from '@/components/RelayLogo';
 import { haptics } from '@/lib/haptics';
 
@@ -141,15 +141,15 @@ export default function Welcome() {
               End-to-end encrypted · Private by default
             </Text>
           </View>
-          <Button
+          <RelayButton
+            label="Get Started"
             onPress={() => {
               haptics.medium();
               router.push('/auth');
             }}
-          >
-            <Button.Label>Get Started</Button.Label>
-          </Button>
-          <Button
+          />
+          <RelayButton
+            label="I already have an account"
             variant="tertiary"
             className="mt-2"
             onPress={() => {
@@ -158,8 +158,7 @@ export default function Welcome() {
             }}
           >
             <Mail color="#94A3B8" size={16} />
-            <Button.Label>I already have an account</Button.Label>
-          </Button>
+          </RelayButton>
         </GlassCard>
       </GradientBackground>
     </View>

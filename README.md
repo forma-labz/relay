@@ -66,3 +66,17 @@ Quick checks:
 
 - CI runs format, lint, typecheck, tests, and `expo-doctor` in `apps/mobile`.
 - EAS workflows run from `apps/mobile` after root `npm ci`.
+
+### EAS Build
+
+1. Create an Expo project once from the app directory:
+   `cd apps/mobile && npx eas-cli init`
+2. Copy the project id into `EXPO_PUBLIC_EAS_PROJECT_ID` (local `.env.local` and GitHub/EAS secrets).
+3. Set GitHub Actions secrets:
+   - `EXPO_TOKEN` (Expo access token)
+   - `EXPO_PUBLIC_EAS_PROJECT_ID`
+   - `EXPO_OWNER` (Expo account/org slug)
+   - optional app secrets: Supabase, OAuth, `EXPO_PUBLIC_RELAY_API_URL`
+4. Trigger **EAS release** via Actions (`build` / `update` / `submit`) or run locally:
+   - `npm run eas:build -w @relay/mobile`
+   - `npm run eas:update -w @relay/mobile`

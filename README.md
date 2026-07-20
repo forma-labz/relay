@@ -53,11 +53,22 @@ if it is unreachable, the AI tab falls back to canned local responses.
 `npm start` defaults to Expo Go (`expo start --go`). Use
 `npm run start:dev-client` only for custom native development builds.
 
+For a phone outside this machine's LAN, use a personal ngrok tunnel:
+
+```bash
+# https://dashboard.ngrok.com/get-started/your-authtoken
+NGROK_AUTHTOKEN=your_token npm run start:go:ngrok
+```
+
+Expo's shared ngrok account often hits session limits (`ERR_NGROK_108`), so a
+personal token is required for reliable Expo Go tunnels.
+
 ## Useful scripts
 
 | Command                    | Description                                |
 | -------------------------- | ------------------------------------------ |
 | `npm start` / `start:go`   | Expo Go dev server (`@relay/mobile`)       |
+| `npm run start:go:ngrok`   | Expo Go via personal ngrok tunnel          |
 | `npm run start:dev-client` | Custom native dev-client Metro             |
 | `npm run api`              | Hono API with watch                        |
 | `npm test`                 | Mobile Jest + API/orchestrator node:test   |

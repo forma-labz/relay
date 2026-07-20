@@ -1,12 +1,4 @@
-import {
-  FileText,
-  ListChecks,
-  MessagesSquare,
-  PenLine,
-  Send,
-  Sparkles,
-  Wand2,
-} from 'lucide-react-native';
+import { FileText, ListChecks, MessagesSquare, PenLine, Send, Sparkles } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -27,26 +19,27 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColor } from 'heroui-native';
 
+import { AiOrb } from '@/components/AiOrb';
 import { GradientBackground } from '@/components/GradientBackground';
-import { RelayLogo } from '@/components/RelayLogo';
+import { McpBadge } from '@/components/McpBadge';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { colors } from '@/constants/theme';
 import { aiSuggestions } from '@/lib/mockData';
 import { haptics } from '@/lib/haptics';
 import { useAiStore } from '@/lib/stores/aiStore';
 import type { AiActionType } from '@/lib/types';
 
-const QUICK: { type: AiActionType; label: string; icon: typeof Wand2; color: string }[] = [
-  { type: 'summary', label: 'Summarize inbox', icon: MessagesSquare, color: '#2563FF' },
-  { type: 'draft', label: 'Draft email', icon: PenLine, color: '#6B4EFF' },
-  { type: 'tasks', label: 'Extract tasks', icon: ListChecks, color: '#38BDF8' },
-  { type: 'notes', label: 'Meeting notes', icon: FileText, color: '#22C55E' },
+const QUICK: { type: AiActionType; label: string; icon: typeof Sparkles; color: string }[] = [
+  { type: 'summary', label: 'Summarize', icon: MessagesSquare, color: colors.brand },
+  { type: 'draft', label: 'Draft email', icon: PenLine, color: colors.brandPurple },
+  { type: 'tasks', label: 'Extract tasks', icon: ListChecks, color: colors.sky },
+  { type: 'notes', label: 'Meeting notes', icon: FileText, color: colors.success },
 ];
 
+/** 10 — AI Assistant (Orchestrator entry) */
 export default function AiScreen() {
   const insets = useSafeAreaInsets();
-  const [foreground, muted, accent] = useThemeColor(['foreground', 'muted', 'accent']);
   const messages = useAiStore((s) => s.messages);
   const thinking = useAiStore((s) => s.thinking);
   const send = useAiStore((s) => s.send);
@@ -71,11 +64,7 @@ export default function AiScreen() {
   return (
     <View className="flex-1">
       <GradientBackground glow={onlyGreeting}>
-        <ScreenHeader
-          title="Relay AI"
-          subtitle="Your communication copilot"
-          right={<Sparkles color={accent} size={20} />}
-        />
+        <ScreenHeader title="Relay AI" subtitle="Orchestrator · MCP tools" right={<McpBadge />} />
 
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -89,8 +78,29 @@ export default function AiScreen() {
             showsVerticalScrollIndicator={false}
           >
             {onlyGreeting && (
-              <View className="items-center py-4">
-                <RelayLogo size={64} />
+              <View className="items-center py-5">
+                <AiOrb size={96} hero />
+                <Text
+                  style={{
+                    color: colors.foreground,
+                    fontFamily: 'Inter_700Bold',
+                    fontSize: 22,
+                    marginTop: 18,
+                  }}
+                >
+                  Hi Jordan! How can I help?
+                </Text>
+                <Text
+                  style={{
+                    color: colors.muted,
+                    fontFamily: 'Inter_400Regular',
+                    fontSize: 14,
+                    marginTop: 6,
+                    textAlign: 'center',
+                  }}
+                >
+                  Ask anything — I plan across Email, Calendar, Drive, and CRM MCP servers.
+                </Text>
               </View>
             )}
 
@@ -101,14 +111,30 @@ export default function AiScreen() {
                 className={`my-1.5 max-w-[88%] ${m.role === 'user' ? 'self-end' : 'self-start'}`}
               >
                 <View
-                  className={`rounded-3xl px-4 py-3 ${m.role === 'user' ? 'bg-brand rounded-br-md' : 'border-glass-border bg-surface rounded-bl-md border'}`}
+                  className={`rounded-3xl px-4 py-3 ${m.role === 'user' ? 'rounded-br-md' : 'rounded-bl-md border'}`}
+                  style={
+                    m.role === 'user'
+                      ? {
+                          backgroundColor: colors.brand,
+                          shadowColor: colors.brand,
+                          shadowOpacity: 0.35,
+                          shadowRadius: 12,
+                        }
+                      : {
+                          backgroundColor: colors.surface,
+                          borderColor: colors.glassBorder,
+                        }
+                  }
                 >
                   {m.role === 'assistant' && i > 0 && (
                     <View className="mb-1.5 flex-row items-center gap-1.5">
-                      <Sparkles color={accent} size={12} />
+                      <Sparkles color={colors.brandPurple} size={12} />
                       <Text
-                        style={{ color: accent, fontFamily: 'Inter_600SemiBold' }}
-                        className="text-[11px]"
+                        style={{
+                          color: colors.brandPurple,
+                          fontFamily: 'Inter_600SemiBold',
+                          fontSize: 11,
+                        }}
                       >
                         Relay AI
                       </Text>
@@ -116,17 +142,22 @@ export default function AiScreen() {
                   )}
                   <Text
                     style={{
-                      color: m.role === 'user' ? '#fff' : foreground,
+                      color: m.role === 'user' ? '#fff' : colors.foreground,
                       fontFamily: 'Inter_400Regular',
+                      fontSize: 14,
+                      lineHeight: 22,
                     }}
-                    className="text-[14px] leading-6"
                   >
                     {m.body}
                   </Text>
                   {m.role === 'assistant' && m.traceLabel ? (
                     <Text
-                      style={{ color: muted, fontFamily: 'Inter_500Medium' }}
-                      className="mt-2 text-[11px]"
+                      style={{
+                        color: colors.muted,
+                        fontFamily: 'Inter_500Medium',
+                        fontSize: 11,
+                        marginTop: 8,
+                      }}
                     >
                       {m.traceLabel}
                     </Text>
@@ -137,7 +168,13 @@ export default function AiScreen() {
 
             {thinking && (
               <Animated.View entering={FadeInUp} className="my-1.5 self-start">
-                <View className="border-glass-border bg-surface flex-row items-center gap-1.5 rounded-3xl rounded-bl-md border px-4 py-3.5">
+                <View
+                  style={{
+                    backgroundColor: colors.surface,
+                    borderColor: colors.glassBorder,
+                  }}
+                  className="flex-row items-center gap-1.5 rounded-3xl rounded-bl-md border px-4 py-3.5"
+                >
                   {[0, 1, 2].map((i) => (
                     <ThinkingDot key={i} index={i} />
                   ))}
@@ -146,7 +183,7 @@ export default function AiScreen() {
             )}
 
             {onlyGreeting && (
-              <View className="mt-2">
+              <View className="mt-2 flex-row flex-wrap gap-2">
                 {aiSuggestions.map((s) => (
                   <Pressable
                     key={s.id}
@@ -154,32 +191,42 @@ export default function AiScreen() {
                       haptics.selection();
                       runAction(s.type, s.title);
                     }}
-                    className="border-glass-border bg-surface mb-2 flex-row items-center gap-3 rounded-2xl border p-3.5 active:opacity-70"
+                    style={{
+                      backgroundColor: colors.surface,
+                      borderColor: colors.glassBorder,
+                      width: '48%',
+                      flexGrow: 1,
+                    }}
+                    className="rounded-2xl border p-3.5 active:opacity-70"
                   >
-                    <View className="bg-brand/12 h-9 w-9 items-center justify-center rounded-xl">
-                      <Wand2 color={accent} size={17} />
-                    </View>
-                    <View className="flex-1">
-                      <Text
-                        style={{ color: foreground, fontFamily: 'Inter_600SemiBold' }}
-                        className="text-[14px]"
-                      >
-                        {s.title}
-                      </Text>
-                      <Text
-                        style={{ color: muted, fontFamily: 'Inter_400Regular' }}
-                        className="text-[12px]"
-                      >
-                        {s.detail}
-                      </Text>
-                    </View>
+                    <Sparkles color={colors.brandPurple} size={18} />
+                    <Text
+                      style={{
+                        color: colors.foreground,
+                        fontFamily: 'Inter_600SemiBold',
+                        fontSize: 13,
+                        marginTop: 8,
+                      }}
+                    >
+                      {s.title}
+                    </Text>
+                    <Text
+                      style={{
+                        color: colors.muted,
+                        fontFamily: 'Inter_400Regular',
+                        fontSize: 11,
+                        marginTop: 4,
+                      }}
+                      numberOfLines={2}
+                    >
+                      {s.detail}
+                    </Text>
                   </Pressable>
                 ))}
               </View>
             )}
           </ScrollView>
 
-          {/* Quick actions row */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -194,12 +241,19 @@ export default function AiScreen() {
                     haptics.selection();
                     runAction(q.type, q.label);
                   }}
-                  className="border-glass-border bg-surface-2/70 flex-row items-center gap-1.5 rounded-full border px-3.5 py-2 active:opacity-70"
+                  style={{
+                    backgroundColor: colors.surface2,
+                    borderColor: colors.glassBorder,
+                  }}
+                  className="flex-row items-center gap-1.5 rounded-full border px-3.5 py-2 active:opacity-70"
                 >
                   <Icon color={q.color} size={15} />
                   <Text
-                    style={{ color: foreground, fontFamily: 'Inter_500Medium' }}
-                    className="text-[12px]"
+                    style={{
+                      color: colors.foreground,
+                      fontFamily: 'Inter_500Medium',
+                      fontSize: 12,
+                    }}
                   >
                     {q.label}
                   </Text>
@@ -209,18 +263,28 @@ export default function AiScreen() {
           </ScrollView>
 
           <View
-            style={{ paddingBottom: insets.bottom + 8 }}
-            className="border-glass-border bg-surface/80 flex-row items-end gap-2 border-t px-3 pt-2"
+            style={{
+              paddingBottom: insets.bottom + 8,
+              borderTopColor: colors.glassBorder,
+              backgroundColor: 'rgba(22,22,31,0.85)',
+            }}
+            className="flex-row items-end gap-2 border-t px-3 pt-2"
           >
-            <View className="border-glass-border bg-surface-2/70 max-h-28 flex-1 rounded-3xl border px-4 py-2.5">
+            <View
+              style={{
+                backgroundColor: colors.surface2,
+                borderColor: colors.glassBorder,
+              }}
+              className="max-h-28 flex-1 rounded-3xl border px-4 py-2.5"
+            >
               <TextInput
                 value={draft}
                 onChangeText={setDraft}
                 placeholder="Ask Relay AI anything…"
-                placeholderTextColor={muted}
+                placeholderTextColor={colors.muted}
                 multiline
                 style={{
-                  color: foreground,
+                  color: colors.foreground,
                   fontFamily: 'Inter_400Regular',
                   fontSize: 15,
                   maxHeight: 96,
@@ -231,7 +295,12 @@ export default function AiScreen() {
             <Pressable
               accessibilityLabel="Send"
               onPress={onSend}
-              style={{ backgroundColor: accent }}
+              style={{
+                backgroundColor: colors.brand,
+                shadowColor: colors.brand,
+                shadowOpacity: 0.55,
+                shadowRadius: 12,
+              }}
               className="h-10 w-10 items-center justify-center rounded-full active:opacity-80"
             >
               <Send color="#fff" size={18} />
@@ -255,7 +324,7 @@ function ThinkingDot({ index }: { index: number }) {
   }));
   return (
     <Animated.View
-      style={[style, { width: 6, height: 6, borderRadius: 3, backgroundColor: '#38BDF8' }]}
+      style={[style, { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.brandPurple }]}
     />
   );
 }

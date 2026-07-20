@@ -6,9 +6,11 @@ import { Pressable, RefreshControl, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useThemeColor } from 'heroui-native';
 
+import { AiOrb } from '@/components/AiOrb';
 import { ConversationRow } from '@/components/ConversationRow';
 import { EmptyState } from '@/components/EmptyState';
 import { GradientBackground } from '@/components/GradientBackground';
+import { McpBadge } from '@/components/McpBadge';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { SearchBar } from '@/components/SearchBar';
 import { SegmentedControl, type SegmentOption } from '@/components/SegmentedControl';
@@ -81,7 +83,8 @@ export default function InboxScreen() {
           title="Inbox"
           large
           right={
-            <View className="flex-row gap-2">
+            <View className="flex-row items-center gap-2">
+              <McpBadge />
               <Pressable
                 accessibilityLabel="Search"
                 onPress={() => {
@@ -152,6 +155,11 @@ export default function InboxScreen() {
             );
           }}
         />
+
+        {/* Floating AI orb — opens Orchestrator (MCP planning entry) */}
+        <View className="absolute right-5 bottom-6">
+          <AiOrb size={58} onPress={() => router.push('/(tabs)/ai')} />
+        </View>
       </GradientBackground>
     </View>
   );

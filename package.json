@@ -9,6 +9,7 @@
   "scripts": {
     "start": "npm run start -w @relay/mobile",
     "start:go": "npm run start:go -w @relay/mobile",
+    "start:go:ngrok": "npm run start:go:ngrok -w @relay/mobile",
     "start:dev-client": "npm run start:dev-client -w @relay/mobile",
     "android": "npm run android -w @relay/mobile",
     "ios": "npm run ios -w @relay/mobile",

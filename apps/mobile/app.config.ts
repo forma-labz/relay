@@ -58,6 +58,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
       googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
       microsoftClientId: process.env.EXPO_PUBLIC_MICROSOFT_CLIENT_ID,
+      relayApiUrl: process.env.EXPO_PUBLIC_RELAY_API_URL,
       demoMode: process.env.EXPO_PUBLIC_DEMO_MODE === 'true',
       eas: { projectId },
     },

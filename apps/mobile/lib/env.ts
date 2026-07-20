@@ -9,6 +9,7 @@ const schema = z.object({
   easProjectId: z.string().optional(),
   googleWebClientId: z.string().optional(),
   microsoftClientId: z.string().optional(),
+  relayApiUrl: optionalUrl,
   demoMode: z.boolean().default(false),
 });
 
@@ -20,6 +21,7 @@ export const env = schema.parse({
   easProjectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID ?? extra.eas?.projectId,
   googleWebClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? extra.googleWebClientId,
   microsoftClientId: process.env.EXPO_PUBLIC_MICROSOFT_CLIENT_ID ?? extra.microsoftClientId,
+  relayApiUrl: process.env.EXPO_PUBLIC_RELAY_API_URL ?? extra.relayApiUrl,
   demoMode: (process.env.EXPO_PUBLIC_DEMO_MODE ?? extra.demoMode) === 'true',
 });
 

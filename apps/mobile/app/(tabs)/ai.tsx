@@ -123,6 +123,14 @@ export default function AiScreen() {
                   >
                     {m.body}
                   </Text>
+                  {m.role === 'assistant' && m.traceLabel ? (
+                    <Text
+                      style={{ color: muted, fontFamily: 'Inter_500Medium' }}
+                      className="mt-2 text-[11px]"
+                    >
+                      {m.traceLabel}
+                    </Text>
+                  ) : null}
                 </View>
               </Animated.View>
             ))}

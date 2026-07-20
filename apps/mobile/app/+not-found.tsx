@@ -1,9 +1,9 @@
 import { Link, Stack } from 'expo-router';
 import { Compass } from 'lucide-react-native';
 import { Text, View } from 'react-native';
-import { Button } from 'heroui-native';
 
 import { GradientBackground } from '@/components/GradientBackground';
+import { RelayButton } from '@/components/RelayButton';
 
 export default function NotFoundScreen() {
   return (
@@ -24,9 +24,7 @@ export default function NotFoundScreen() {
             The screen you were looking for doesn&apos;t exist.
           </Text>
           <Link href="/(tabs)/inbox" asChild>
-            <Button>
-              <Button.Label>Back to Inbox</Button.Label>
-            </Button>
+            <RelayButton label="Back to Inbox" />
           </Link>
         </View>
       </GradientBackground>

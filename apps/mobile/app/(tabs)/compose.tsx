@@ -1,8 +1,9 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import {
-  Clock,
+  AlignLeft,
   Languages,
-  ListChecks,
+  Minimize2,
   Paperclip,
   Send,
   Sparkles,
@@ -19,33 +20,35 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import Animated, { FadeIn, FadeInDown, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'heroui-native';
 
 import { GradientBackground } from '@/components/GradientBackground';
+import { McpBadge } from '@/components/McpBadge';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { SegmentedControl } from '@/components/SegmentedControl';
+import { colors, gradients } from '@/constants/theme';
 import { haptics } from '@/lib/haptics';
 
-type Mode = 'message' | 'email';
-type AiTool = 'rewrite' | 'translate' | 'summarize';
+/** AI toolbar actions — routed via Email Agent / Smart Composer MCP tools. */
+type AiTool = 'rewrite' | 'improve' | 'shorten' | 'translate';
 
 const AI_TOOLS: { id: AiTool; label: string; icon: typeof Wand2 }[] = [
-  { id: 'rewrite', label: 'Rewrite', icon: Wand2 },
+  { id: 'rewrite', label: 'AI Rewrite', icon: Wand2 },
+  { id: 'improve', label: 'Improve', icon: Sparkles },
+  { id: 'shorten', label: 'Shorten', icon: Minimize2 },
   { id: 'translate', label: 'Translate', icon: Languages },
-  { id: 'summarize', label: 'Summarize', icon: ListChecks },
 ];
 
+/** 07 — Smart Composer */
 export default function ComposeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [mode, setMode] = useState<Mode>('message');
-  const [to, setTo] = useState('');
-  const [subject, setSubject] = useState('');
-  const [body, setBody] = useState('');
+  const [to, setTo] = useState('sarah@acme.com');
+  const [subject, setSubject] = useState('Project update & next steps');
+  const [body, setBody] = useState(
+    "Hi Sarah,\n\nThanks for the call earlier. I've attached the latest proposal and would love to schedule a follow-up.\n\nBest,\nJordan",
+  );
   const [busy, setBusy] = useState<AiTool | null>(null);
-  const [scheduled, setScheduled] = useState<string | null>(null);
 
   const runTool = (tool: AiTool) => {
     if (!body.trim()) {
@@ -54,30 +57,27 @@ export default function ComposeScreen() {
     }
     haptics.selection();
     setBusy(tool);
+    // MCP integration point: POST /v1/ai/actions → Email Agent → model router
     setTimeout(() => {
-      if (tool === 'rewrite') {
+      if (tool === 'rewrite' || tool === 'improve') {
         setBody(
-          "Hi there,\n\nThanks so much for your time today — I really valued the conversation. I'll pull together the next steps and share a short plan by tomorrow.\n\nBest,\nJordan",
+          "Hi Sarah,\n\nGreat speaking earlier — I've attached BrightPath_Proposal_v3.pdf. Are you free Thursday 2pm to walk through pricing and onboarding?\n\nBest,\nJordan",
         );
-      } else if (tool === 'translate') {
-        setBody(
-          'Hola,\n\nMuchas gracias por tu tiempo hoy. Prepararé los próximos pasos y compartiré un breve plan mañana.\n\nSaludos,\nJordan',
-        );
+      } else if (tool === 'shorten') {
+        setBody('Hi Sarah — proposal attached. Free Thursday 2pm to review?\n\n— Jordan');
       } else {
-        setBody('Summary: Recapped the call, agreed on next steps, plan to follow tomorrow.');
+        setBody(
+          'Hola Sarah,\n\nAdjunto la propuesta más reciente. ¿Podemos agendar una llamada el jueves a las 2pm?\n\nSaludos,\nJordan',
+        );
       }
       haptics.success();
       setBusy(null);
-    }, 1000);
-  };
-
-  const schedule = () => {
-    haptics.selection();
-    setScheduled(scheduled ? null : 'Tomorrow, 9:00 AM');
+    }, 900);
   };
 
   const sendNow = () => {
     haptics.success();
+    // MCP: email.send requires approval via Security Agent in production
     router.push('/(tabs)/inbox');
   };
 
@@ -85,9 +85,10 @@ export default function ComposeScreen() {
     <View className="flex-1">
       <GradientBackground glow={false}>
         <ScreenHeader
-          title="Compose"
-          subtitle="AI-powered messaging"
+          title="New Message"
+          subtitle="Smart Composer"
           onBack={() => router.push('/(tabs)/inbox')}
+          right={<McpBadge label="Email" />}
         />
 
         <KeyboardAvoidingView
@@ -96,148 +97,133 @@ export default function ComposeScreen() {
           style={{ flex: 1 }}
         >
           <ScrollView
-            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
+            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16 }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <View className="mb-4">
-              <SegmentedControl
-                options={[
-                  { value: 'message', label: 'Message' },
-                  { value: 'email', label: 'Email' },
-                ]}
-                value={mode}
-                onChange={(v) => setMode(v)}
-              />
-            </View>
-
-            <Field label="To">
-              <TextInput
-                value={to}
-                onChangeText={setTo}
-                placeholder={mode === 'email' ? 'name@company.com' : 'Search contacts'}
-                placeholderTextColor="#64748B"
-                autoCapitalize="none"
-                className="text-foreground"
-                style={{ fontFamily: 'Inter_400Regular', fontSize: 15 }}
-              />
-            </Field>
-
-            {mode === 'email' && (
-              <Animated.View entering={FadeInDown.duration(300)} layout={LinearTransition}>
-                <Field label="Subject">
-                  <TextInput
-                    value={subject}
-                    onChangeText={setSubject}
-                    placeholder="Add a subject"
-                    placeholderTextColor="#64748B"
-                    className="text-foreground"
-                    style={{ fontFamily: 'Inter_500Medium', fontSize: 15 }}
-                  />
-                </Field>
-              </Animated.View>
-            )}
-
-            <Animated.View
-              layout={LinearTransition}
-              className="border-glass-border bg-surface mt-1 rounded-3xl border p-4"
-            >
-              <TextInput
-                value={body}
-                onChangeText={setBody}
-                placeholder={mode === 'email' ? 'Write your email…' : 'Type a message…'}
-                placeholderTextColor="#64748B"
-                multiline
-                className="text-foreground"
+            <Animated.View entering={FadeInDown.duration(350)}>
+              <Field label="To" value={to} onChangeText={setTo} />
+              <Field label="Subject" value={subject} onChangeText={setSubject} />
+              <View
                 style={{
-                  fontFamily: 'Inter_400Regular',
-                  fontSize: 15,
-                  minHeight: 160,
-                  lineHeight: 22,
-                  textAlignVertical: 'top',
+                  backgroundColor: colors.surface,
+                  borderColor: colors.glassBorder,
+                  minHeight: 220,
                 }}
-              />
-              {busy && (
-                <Animated.View entering={FadeIn} className="mt-3 flex-row items-center gap-2">
-                  <ActivityIndicator color="#2563FF" size="small" />
-                  <Text
-                    style={{ color: '#94A3B8', fontFamily: 'Inter_500Medium' }}
-                    className="text-xs"
-                  >
-                    Relay AI is working…
-                  </Text>
-                </Animated.View>
-              )}
-            </Animated.View>
-
-            <View className="mt-4">
-              <View className="mb-2 flex-row items-center gap-1.5">
-                <Sparkles color="#6B4EFF" size={14} />
-                <Text
-                  style={{ color: '#94A3B8', fontFamily: 'Inter_600SemiBold' }}
-                  className="text-xs tracking-wide uppercase"
-                >
-                  AI tools
-                </Text>
-              </View>
-              <View className="flex-row gap-2">
-                {AI_TOOLS.map((t) => {
-                  const Icon = t.icon;
-                  const active = busy === t.id;
-                  return (
-                    <Pressable
-                      key={t.id}
-                      onPress={() => runTool(t.id)}
-                      className="border-glass-border bg-surface-2/70 flex-1 flex-row items-center justify-center gap-1.5 rounded-2xl border py-3 active:opacity-70"
-                    >
-                      <Icon color={active ? '#2563FF' : '#38BDF8'} size={16} />
-                      <Text
-                        style={{ color: '#F8FAFC', fontFamily: 'Inter_600SemiBold' }}
-                        className="text-[13px]"
-                      >
-                        {t.label}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-
-            <Pressable
-              onPress={schedule}
-              className="border-glass-border bg-surface-2/70 mt-3 flex-row items-center gap-2.5 rounded-2xl border px-4 py-3.5 active:opacity-70"
-            >
-              <Clock color="#F59E0B" size={18} />
-              <Text
-                style={{ color: '#F8FAFC', fontFamily: 'Inter_500Medium' }}
-                className="flex-1 text-sm"
+                className="mt-3 rounded-2xl border px-4 py-3"
               >
-                {scheduled ? `Scheduled · ${scheduled}` : 'Schedule send'}
-              </Text>
-              {scheduled && (
-                <Text
-                  style={{ color: '#F59E0B', fontFamily: 'Inter_600SemiBold' }}
-                  className="text-xs"
+                <View className="mb-2 flex-row items-center gap-1.5">
+                  <AlignLeft color={colors.muted} size={14} />
+                  <Text
+                    style={{ color: colors.muted, fontFamily: 'Inter_500Medium', fontSize: 12 }}
+                  >
+                    Body
+                  </Text>
+                </View>
+                <TextInput
+                  value={body}
+                  onChangeText={setBody}
+                  multiline
+                  placeholder="Write your message…"
+                  placeholderTextColor={colors.muted}
+                  style={{
+                    color: colors.foreground,
+                    fontFamily: 'Inter_400Regular',
+                    fontSize: 15,
+                    lineHeight: 22,
+                    minHeight: 160,
+                    textAlignVertical: 'top',
+                  }}
+                />
+              </View>
+            </Animated.View>
+          </ScrollView>
+
+          {/* AI Toolbar — Email Agent quick actions */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 16, gap: 8, paddingVertical: 10 }}
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: colors.glassBorder,
+              backgroundColor: 'rgba(22,22,31,0.92)',
+            }}
+          >
+            {AI_TOOLS.map((t) => {
+              const Icon = t.icon;
+              const active = busy === t.id;
+              return (
+                <Pressable
+                  key={t.id}
+                  onPress={() => runTool(t.id)}
+                  disabled={!!busy}
+                  className="active:opacity-80"
                 >
-                  Tap to clear
-                </Text>
-              )}
-            </Pressable>
+                  <View
+                    style={{
+                      borderColor: active ? colors.brand : colors.glassBorder,
+                      backgroundColor: active ? 'rgba(99,102,241,0.2)' : colors.surface2,
+                      shadowColor: active ? colors.brand : 'transparent',
+                      shadowOpacity: 0.5,
+                      shadowRadius: 10,
+                    }}
+                    className="flex-row items-center gap-1.5 rounded-full border px-3.5 py-2"
+                  >
+                    {active ? (
+                      <ActivityIndicator color={colors.brand} size="small" />
+                    ) : (
+                      <Icon color={colors.brandPurple} size={14} />
+                    )}
+                    <Text
+                      style={{
+                        color: colors.foreground,
+                        fontFamily: 'Inter_600SemiBold',
+                        fontSize: 12,
+                      }}
+                    >
+                      {t.label}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
           </ScrollView>
 
           <View
             style={{ paddingBottom: insets.bottom + 10 }}
-            className="border-glass-border bg-surface/80 flex-row gap-2 border-t px-4 pt-3"
+            className="flex-row items-center gap-3 border-t border-white/10 px-4 pt-3"
           >
-            <Button variant="secondary" isIconOnly onPress={haptics.selection}>
-              <Paperclip color="#94A3B8" size={18} />
-            </Button>
-            <Button className="flex-1" onPress={sendNow}>
-              <Send color="#fff" size={17} />
-              <Button.Label>
-                {scheduled ? 'Schedule' : mode === 'email' ? 'Send email' : 'Send message'}
-              </Button.Label>
-            </Button>
+            <Pressable
+              accessibilityLabel="Attach"
+              className="h-11 w-11 items-center justify-center rounded-full active:opacity-70"
+              style={{ backgroundColor: colors.surface2 }}
+            >
+              <Paperclip color={colors.muted} size={20} />
+            </Pressable>
+            <Pressable onPress={sendNow} className="flex-1 active:opacity-90">
+              <LinearGradient
+                colors={gradients.brand}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={{
+                  borderRadius: 16,
+                  paddingVertical: 14,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  shadowColor: colors.brand,
+                  shadowOpacity: 0.5,
+                  shadowRadius: 14,
+                }}
+              >
+                <Send color="#fff" size={18} />
+                <Text style={{ color: '#fff', fontFamily: 'Inter_700Bold', fontSize: 16 }}>
+                  Send
+                </Text>
+              </LinearGradient>
+            </Pressable>
           </View>
         </KeyboardAvoidingView>
       </GradientBackground>
@@ -245,16 +231,35 @@ export default function ComposeScreen() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  value,
+  onChangeText,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+}) {
   return (
-    <View className="border-glass-border bg-surface mb-2 flex-row items-center gap-3 rounded-2xl border px-4 py-3">
-      <Text
-        style={{ color: '#64748B', fontFamily: 'Inter_600SemiBold', width: 60 }}
-        className="text-sm"
-      >
+    <View
+      style={{ backgroundColor: colors.surface, borderColor: colors.glassBorder }}
+      className="mt-3 rounded-2xl border px-4 py-3"
+    >
+      <Text style={{ color: colors.muted, fontFamily: 'Inter_500Medium', fontSize: 11 }}>
         {label}
       </Text>
-      <View className="flex-1">{children}</View>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholderTextColor={colors.muted}
+        style={{
+          color: colors.foreground,
+          fontFamily: 'Inter_500Medium',
+          fontSize: 15,
+          padding: 0,
+          marginTop: 4,
+        }}
+      />
     </View>
   );
 }

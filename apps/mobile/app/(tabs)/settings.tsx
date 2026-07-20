@@ -175,17 +175,43 @@ export default function SettingsScreen() {
             />
           </Section>
 
-          {/* Account */}
+          {/* MCP & Account */}
+          <Section title="MCP & integrations">
+            <Row
+              icon={Database}
+              iconColor="#6366F1"
+              label="MCP Registry"
+              sub="Gmail, Calendar, Slack, Drive…"
+              onPress={() => {
+                haptics.selection();
+                router.push('/integrations');
+              }}
+            />
+            <Row
+              icon={Mail}
+              iconColor="#A855F7"
+              label="Connect accounts"
+              onPress={() => {
+                haptics.selection();
+                router.push('/connect-email');
+              }}
+              last
+            />
+          </Section>
+
           <Section title="Account">
             <Row
               icon={CreditCard}
-              iconColor="#22C55E"
+              iconColor="#F59E0B"
               label="Subscription"
               sub={currentUser.plan}
-              onPress={haptics.selection}
+              onPress={() => {
+                haptics.selection();
+                router.push('/paywall');
+              }}
             />
             <Row icon={Database} iconColor="#38BDF8" label="Storage" sub="4.2 GB of 50 GB used" />
-            <Row icon={UserCog} iconColor="#6B4EFF" label="Manage profile" last />
+            <Row icon={UserCog} iconColor="#A855F7" label="Manage profile" last />
           </Section>
 
           <Animated.View entering={FadeInDown.delay(120).duration(400)}>

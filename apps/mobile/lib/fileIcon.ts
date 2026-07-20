@@ -21,7 +21,7 @@ export function fileIcon(kind: FileKind): { Icon: LucideIcon; color: string; tin
     case 'sheet':
       return { Icon: FileSpreadsheet, color: '#22C55E', tint: 'rgba(34,197,94,0.16)' };
     case 'doc':
-      return { Icon: FileText, color: '#2563FF', tint: 'rgba(37,99,255,0.16)' };
+      return { Icon: FileText, color: '#6366F1', tint: 'rgba(99,102,241,0.16)' };
     case 'zip':
       return { Icon: FileArchive, color: '#F59E0B', tint: 'rgba(245,158,11,0.16)' };
     default:

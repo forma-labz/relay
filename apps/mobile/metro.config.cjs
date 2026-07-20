@@ -255,9 +255,14 @@ config.server = {
   },
 };
 
-// Stub native-only modules when running in Expo Go / web Metro.
-// Custom native builds set EXPO_PLATFORM=native to keep the real modules.
-if (process.env.EXPO_PLATFORM !== 'native') {
+// Stub native-only modules for Expo Go / local Metro.
+// Keep real modules for EAS builds and expo-dev-client (EXPO_PLATFORM=native).
+const isNativeBuild =
+  process.env.EAS_BUILD === 'true' ||
+  Boolean(process.env.EAS_BUILD_PLATFORM) ||
+  process.env.EXPO_PLATFORM === 'native';
+
+if (!isNativeBuild) {
   const previousResolveRequest = config.resolver.resolveRequest;
   config.resolver.resolveRequest = (context, moduleName, platform) => {
     if (moduleName === 'react-native-maps' || moduleName === 'react-native-mmkv') {

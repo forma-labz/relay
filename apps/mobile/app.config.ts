@@ -1,23 +1,24 @@
 import type { ConfigContext, ExpoConfig } from '@expo/config';
 
-type ExpoPlugins = NonNullable<ExpoConfig['plugins']>;
-
 export default ({ config }: ConfigContext): ExpoConfig => {
   const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
-  const nativePlugins: ExpoPlugins =
-    process.env.EXPO_PLATFORM === 'native'
-      ? [['expo-dev-client', { launchMode: 'most-recent' }], 'react-native-maps']
-      : [];
 
   return {
     ...config,
     name: 'Relay',
     slug: 'relay',
+    owner: process.env.EXPO_OWNER,
     newArchEnabled: true,
-    version: process.env.BILT_APP_VERSION ?? '1.0.0',
+    version: process.env.EXPO_APP_VERSION ?? process.env.BILT_APP_VERSION ?? '1.0.0',
     orientation: 'portrait',
     userInterfaceStyle: 'automatic',
     scheme: 'relay',
+    icon: './assets/icon.png',
+    splash: {
+      image: './assets/splash-icon.png',
+      resizeMode: 'contain',
+      backgroundColor: '#0B142E',
+    },
     runtimeVersion: {
       policy: 'appVersion',
     },
@@ -31,6 +32,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       : {}),
     assetBundlePatterns: ['**/*'],
     ios: {
+      icon: './assets/icon.png',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         NSFaceIDUsageDescription: 'Relay uses Face ID to unlock your encrypted inbox.',
@@ -41,6 +43,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       associatedDomains: ['applinks:relay.formalabz.com'],
     },
     android: {
+      adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#2563FF',
+      },
       package: process.env.EXPO_ANDROID_PACKAGE ?? 'com.formalabz.relay',
       permissions: ['USE_BIOMETRIC', 'RECORD_AUDIO', 'POST_NOTIFICATIONS'],
       intentFilters: [
@@ -71,17 +77,33 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       'expo-apple-authentication',
       'expo-notifications',
       'expo-web-browser',
+      'expo-updates',
+      [
+        'expo-dev-client',
+        {
+          launchMode: 'most-recent',
+        },
+      ],
       [
         'expo-audio',
         {
           microphonePermission: 'Allow Relay to record secure audio messages.',
         },
       ],
-      ...nativePlugins,
+      [
+        'expo-splash-screen',
+        {
+          backgroundColor: '#0B142E',
+          image: './assets/splash-icon.png',
+          imageWidth: 200,
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
+      // Keep Metro resolution aligned with native autolinking in the monorepo.
+      autolinkingModuleResolution: true,
     },
   };
 };

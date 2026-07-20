@@ -13,7 +13,6 @@ import {
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform } from 'react-native';
 import { useEffect } from 'react';
-import * as DevClient from 'expo-dev-client';
 import { HeroUINativeProvider } from 'heroui-native';
 import { Uniwind } from 'uniwind';
 import {
@@ -117,16 +116,31 @@ export default function RootLayout() {
     }
   }, []);
 
+  // Hide the custom-dev-client menu only in native development builds.
+  // Dynamically import so Expo Go never evaluates expo-dev-client at startup.
   useEffect(() => {
     const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
-    if (__DEV__ && Platform.OS !== 'web' && !isExpoGo) {
-      const timer = setTimeout(() => {
-        DevClient.closeMenu();
-        DevClient.hideMenu();
-      }, 1000);
-      return () => clearTimeout(timer);
-    }
-    return undefined;
+    if (!__DEV__ || Platform.OS === 'web' || isExpoGo) return undefined;
+
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    void import('expo-dev-client')
+      .then((DevClient) => {
+        if (cancelled) return;
+        timer = setTimeout(() => {
+          DevClient.closeMenu();
+          DevClient.hideMenu();
+        }, 1000);
+      })
+      .catch(() => {
+        // Dev client is optional when iterating in Expo Go.
+      });
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {

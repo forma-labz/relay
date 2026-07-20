@@ -4,7 +4,9 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --go",
+    "start:go": "expo start --go",
+    "start:dev-client": "EXPO_PLATFORM=native expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
@@ -65,7 +67,6 @@
     "react-native-css-interop": "~0.2.1",
     "react-native-gesture-handler": "~2.28.0",
     "react-native-maps": "1.20.1",
-    "react-native-mmkv": "^4.3.2",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",

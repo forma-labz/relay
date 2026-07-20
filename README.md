@@ -36,20 +36,33 @@ docs/mcp-2.0.md              Architecture notes
 2. Copy [`.env.example`](.env.example) values into `apps/mobile/.env.local` (and set API keys if desired).
 3. Apply `supabase/migrations` to a Supabase project when using a real backend.
 4. Start the API: `npm run api` (default `http://localhost:8787`).
-5. Start Expo: `npm start` (set `EXPO_PUBLIC_RELAY_API_URL=http://localhost:8787`).
+5. Start Expo Go: `npm start` (set `EXPO_PUBLIC_RELAY_API_URL=http://localhost:8787`).
 
-`EXPO_PUBLIC_DEMO_MODE=true` permits simulated sign-in only in development.
-If the API is unreachable, the AI tab falls back to canned local responses.
+### Expo Go feature testing
+
+```bash
+# apps/mobile/.env.local
+EXPO_PUBLIC_DEMO_MODE=true
+EXPO_PUBLIC_RELAY_API_URL=http://localhost:8787
+```
+
+Then run `npm start`, scan the QR code in Expo Go, and use any sign-in button
+(demo mode simulates auth without Supabase). Keep the API running for live AI;
+if it is unreachable, the AI tab falls back to canned local responses.
+
+`npm start` defaults to Expo Go (`expo start --go`). Use
+`npm run start:dev-client` only for custom native development builds.
 
 ## Useful scripts
 
-| Command             | Description                                |
-| ------------------- | ------------------------------------------ |
-| `npm start`         | Expo dev server (`@relay/mobile`)          |
-| `npm run api`       | Hono API with watch                        |
-| `npm test`          | Mobile Jest + API/orchestrator node:test   |
-| `npm run validate`  | Format, lint, typecheck, tests, expo-check |
-| `npm run typecheck` | All workspaces                             |
+| Command                    | Description                                |
+| -------------------------- | ------------------------------------------ |
+| `npm start` / `start:go`   | Expo Go dev server (`@relay/mobile`)       |
+| `npm run start:dev-client` | Custom native dev-client Metro             |
+| `npm run api`              | Hono API with watch                        |
+| `npm test`                 | Mobile Jest + API/orchestrator node:test   |
+| `npm run validate`         | Format, lint, typecheck, tests, expo-check |
+| `npm run typecheck`        | All workspaces                             |
 
 ## Relay AI / MCP
 

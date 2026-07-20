@@ -5,10 +5,9 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'rea
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Button } from 'heroui-native';
-
 import { GlassCard } from '@/components/GlassCard';
 import { GradientBackground } from '@/components/GradientBackground';
+import { RelayButton } from '@/components/RelayButton';
 import { ScreenHeader } from '@/components/ScreenHeader';
 import { haptics } from '@/lib/haptics';
 import { env } from '@/lib/env';
@@ -168,10 +167,9 @@ export default function ConnectEmail() {
         </ScrollView>
 
         <View style={{ paddingBottom: insets.bottom + 12 }} className="gap-2 px-5 pt-2">
-          <Button onPress={finish}>
-            <Button.Label>{connected.length > 0 ? 'Continue' : 'Skip for now'}</Button.Label>
+          <RelayButton label={connected.length > 0 ? 'Continue' : 'Skip for now'} onPress={finish}>
             <ChevronRight color="#fff" size={18} />
-          </Button>
+          </RelayButton>
         </View>
       </GradientBackground>
     </View>

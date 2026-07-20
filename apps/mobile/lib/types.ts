@@ -81,6 +81,8 @@ export interface AiMessage {
   role: 'user' | 'assistant';
   body: string;
   timestamp: string;
+  /** Light plan/tool trace from the Relay orchestrator, e.g. "Used Email + Calendar". */
+  traceLabel?: string;
 }
 
 export type NotificationType = 'email' | 'message' | 'task' | 'calendar';

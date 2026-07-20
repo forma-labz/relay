@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 
+import { chatWithRelayAi, formatTraceLine, runRelayAiAction } from '@/lib/api/relayAi';
+import { env } from '@/lib/env';
 import type { AiActionType, AiMessage } from '@/lib/types';
 import { aiSeedMessages } from '@/lib/mockData';
 
 interface AiState {
   messages: AiMessage[];
   thinking: boolean;
+  conversationId?: string;
+  pendingApprovalId?: string;
   send: (body: string) => void;
   runAction: (type: AiActionType, label: string) => void;
 }
@@ -27,9 +31,31 @@ const CANNED: Record<AiActionType, string> = {
 
 const uid = () => Math.random().toString(36).slice(2);
 
+function pushAssistant(
+  set: (fn: (s: AiState) => Partial<AiState>) => void,
+  body: string,
+  extras?: Partial<AiMessage>,
+) {
+  set((s) => ({
+    messages: [
+      ...s.messages,
+      {
+        id: uid(),
+        role: 'assistant',
+        body,
+        timestamp: new Date().toISOString(),
+        ...extras,
+      },
+    ],
+    thinking: false,
+  }));
+}
+
 export const useAiStore = create<AiState>((set, get) => ({
   messages: aiSeedMessages,
   thinking: false,
+  conversationId: undefined,
+  pendingApprovalId: undefined,
   send: (body) => {
     const trimmed = body.trim();
     if (!trimmed) return;
@@ -40,20 +66,31 @@ export const useAiStore = create<AiState>((set, get) => ({
       ],
       thinking: true,
     }));
-    setTimeout(() => {
-      set((s) => ({
-        messages: [
-          ...s.messages,
-          {
-            id: uid(),
-            role: 'assistant',
-            body: "Here's a suggestion based on your recent threads. I've kept the tone warm and concise — want me to refine it further or turn it into a send-ready draft?",
-            timestamp: new Date().toISOString(),
-          },
-        ],
-        thinking: false,
-      }));
-    }, 900);
+
+    void (async () => {
+      try {
+        if (!env.relayApiUrl) throw new Error('no api');
+        const approve =
+          get().pendingApprovalId && /^(approve|yes|confirm)\b/i.test(trimmed)
+            ? get().pendingApprovalId
+            : undefined;
+        const res = await chatWithRelayAi({
+          message: trimmed,
+          conversationId: get().conversationId,
+          approveActionId: approve,
+        });
+        set({
+          conversationId: res.conversationId,
+          pendingApprovalId: res.pendingApprovals[0]?.id,
+        });
+        pushAssistant(set, res.message, { traceLabel: formatTraceLine(res.trace) });
+      } catch {
+        pushAssistant(
+          set,
+          "Here's a suggestion based on your recent threads. I've kept the tone warm and concise — want me to refine it further or turn it into a send-ready draft?",
+        );
+      }
+    })();
   },
   runAction: (type, label) => {
     set((s) => ({
@@ -63,15 +100,23 @@ export const useAiStore = create<AiState>((set, get) => ({
       ],
       thinking: true,
     }));
-    setTimeout(() => {
-      set((s) => ({
-        messages: [
-          ...s.messages,
-          { id: uid(), role: 'assistant', body: CANNED[type], timestamp: new Date().toISOString() },
-        ],
-        thinking: false,
-      }));
-    }, 900);
-    void get();
+
+    void (async () => {
+      try {
+        if (!env.relayApiUrl) throw new Error('no api');
+        const res = await runRelayAiAction({
+          type,
+          label,
+          conversationId: get().conversationId,
+        });
+        set({
+          conversationId: res.conversationId,
+          pendingApprovalId: res.pendingApprovals[0]?.id,
+        });
+        pushAssistant(set, res.message, { traceLabel: formatTraceLine(res.trace) });
+      } catch {
+        pushAssistant(set, CANNED[type]);
+      }
+    })();
   },
 }));

@@ -26,5 +26,6 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npx expo-doctor
+        working-directory: apps/mobile
         env:
           EXPO_PUBLIC_DEMO_MODE: 'true'

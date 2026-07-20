@@ -27,7 +27,7 @@ export function ConversationRow({ conversation, contact, onPress }: Conversation
       <View>
         <InitialsAvatar initials={contact.initials} color={contact.avatarColor} size={52} />
         <View
-          style={{ backgroundColor: isEmail ? '#6B4EFF' : '#22C55E' }}
+          style={{ backgroundColor: isEmail ? '#A855F7' : '#22C55E' }}
           className="border-background absolute -right-0.5 -bottom-0.5 h-5 w-5 items-center justify-center rounded-full border-2"
         >
           {isEmail ? <Mail color="#fff" size={10} /> : <MessageCircle color="#fff" size={10} />}

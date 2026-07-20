@@ -1,16 +1,19 @@
 import { useRouter } from 'expo-router';
-import { Check, ChevronRight, Mail, Plus, Server } from 'lucide-react-native';
+import { Check, Lock, Mail, Server } from 'lucide-react-native';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { GlassCard } from '@/components/GlassCard';
 import { GradientBackground } from '@/components/GradientBackground';
-import { RelayButton } from '@/components/RelayButton';
+import { McpBadge } from '@/components/McpBadge';
+import { NeonButton } from '@/components/NeonButton';
 import { ScreenHeader } from '@/components/ScreenHeader';
-import { haptics } from '@/lib/haptics';
+import { colors } from '@/constants/theme';
 import { env } from '@/lib/env';
+import { haptics } from '@/lib/haptics';
 import { useOnboardingStore } from '@/lib/stores/onboardingStore';
 import { connectEmailProvider } from '@/services/emailAccounts';
 
@@ -46,19 +49,35 @@ interface ProviderDef {
   name: string;
   desc: string;
   glyph: React.ReactNode;
+  /** MCP server this provider maps to in the orchestrator registry. */
+  mcpServer: string;
 }
 
 const PROVIDERS: ProviderDef[] = [
-  { id: 'gmail', name: 'Gmail', desc: 'Google Workspace & personal', glyph: <GmailGlyph /> },
-  { id: 'outlook', name: 'Outlook', desc: 'Microsoft 365 & Hotmail', glyph: <OutlookGlyph /> },
+  {
+    id: 'gmail',
+    name: 'Gmail',
+    desc: 'Google Workspace & personal',
+    glyph: <GmailGlyph />,
+    mcpServer: 'gmail-mock',
+  },
+  {
+    id: 'outlook',
+    name: 'Outlook',
+    desc: 'Microsoft 365 & Hotmail',
+    glyph: <OutlookGlyph />,
+    mcpServer: 'gmail-mock',
+  },
   {
     id: 'imap',
-    name: 'IMAP / SMTP',
-    desc: 'Any other email provider',
-    glyph: <Server color="#38BDF8" size={24} />,
+    name: 'Other Email',
+    desc: 'IMAP / SMTP providers',
+    glyph: <Server color={colors.sky} size={24} />,
+    mcpServer: 'gmail-mock',
   },
 ];
 
+/** 04 — Connect Email (registers email MCP servers) */
 export default function ConnectEmail() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -105,71 +124,116 @@ export default function ConnectEmail() {
         <ScreenHeader title="Connect email" onBack={() => router.back()} />
         <ScrollView contentContainerClassName="px-5 pb-6" showsVerticalScrollIndicator={false}>
           <Animated.View entering={FadeInDown.duration(500)} className="mb-6">
-            <View className="bg-brand/15 mb-4 h-16 w-16 items-center justify-center rounded-3xl">
-              <Mail color="#2563FF" size={30} />
-            </View>
-            <Text style={{ color: '#F8FAFC', fontFamily: 'Inter_700Bold' }} className="text-2xl">
-              Link your accounts
-            </Text>
-            <Text
-              style={{ color: '#94A3B8', fontFamily: 'Inter_400Regular' }}
-              className="mt-1 text-sm leading-5"
+            <View
+              style={{ backgroundColor: 'rgba(99,102,241,0.18)' }}
+              className="mb-4 h-16 w-16 items-center justify-center rounded-3xl"
             >
-              Bring email and chat into one place. You can add more accounts anytime from Settings.
+              <Mail color={colors.brand} size={30} />
+            </View>
+            <View className="mb-2 flex-row items-center gap-2">
+              <Text style={{ color: colors.foreground, fontFamily: 'Inter_700Bold', fontSize: 24 }}>
+                Link your accounts
+              </Text>
+              <McpBadge />
+            </View>
+            <Text
+              style={{
+                color: colors.muted,
+                fontFamily: 'Inter_400Regular',
+                fontSize: 14,
+                lineHeight: 20,
+              }}
+            >
+              Connecting an account registers it as an MCP server the Email Agent can use.
             </Text>
           </Animated.View>
 
-          <View className="gap-3">
-            {PROVIDERS.map((p, i) => {
-              const isConnected = connected.includes(p.id);
-              const isConnecting = connecting === p.id;
-              return (
-                <Animated.View key={p.id} entering={FadeInDown.delay(100 + i * 90).duration(450)}>
-                  <Pressable onPress={() => connect(p.id)} disabled={isConnected}>
-                    <GlassCard className="flex-row items-center gap-3 rounded-3xl p-4">
-                      <View className="bg-surface-2 h-11 w-11 items-center justify-center rounded-2xl">
-                        {p.glyph}
+          {PROVIDERS.map((p, i) => {
+            const isConnected = connected.includes(p.id);
+            const isBusy = connecting === p.id;
+            return (
+              <Animated.View key={p.id} entering={FadeInDown.delay(80 * i).duration(400)}>
+                <Pressable
+                  onPress={() => void connect(p.id)}
+                  disabled={!!connecting || isConnected}
+                  className="mb-3 active:opacity-80"
+                >
+                  <GlassCard className="flex-row items-center gap-3.5 px-4 py-4">
+                    <View
+                      style={{ backgroundColor: colors.surface2 }}
+                      className="h-12 w-12 items-center justify-center rounded-2xl"
+                    >
+                      {p.glyph}
+                    </View>
+                    <View className="flex-1">
+                      <Text
+                        style={{
+                          color: colors.foreground,
+                          fontFamily: 'Inter_600SemiBold',
+                          fontSize: 16,
+                        }}
+                      >
+                        {p.name}
+                      </Text>
+                      <Text
+                        style={{
+                          color: colors.muted,
+                          fontFamily: 'Inter_400Regular',
+                          fontSize: 12,
+                        }}
+                      >
+                        {p.desc}
+                      </Text>
+                    </View>
+                    {isBusy ? (
+                      <ActivityIndicator color={colors.brand} />
+                    ) : isConnected ? (
+                      <View
+                        style={{ backgroundColor: 'rgba(34,197,94,0.2)' }}
+                        className="h-8 w-8 items-center justify-center rounded-full"
+                      >
+                        <Check color={colors.success} size={16} />
                       </View>
-                      <View className="flex-1">
-                        <Text
-                          style={{ color: '#F8FAFC', fontFamily: 'Inter_600SemiBold' }}
-                          className="text-base"
-                        >
-                          {p.name}
-                        </Text>
-                        <Text
-                          style={{
-                            color: isConnected ? '#22C55E' : '#94A3B8',
-                            fontFamily: 'Inter_400Regular',
-                          }}
-                          className="text-xs"
-                        >
-                          {isConnected ? 'Connected' : isConnecting ? 'Connecting…' : p.desc}
-                        </Text>
-                      </View>
-                      {isConnecting ? (
-                        <ActivityIndicator color="#2563FF" />
-                      ) : isConnected ? (
-                        <View className="bg-success h-7 w-7 items-center justify-center rounded-full">
-                          <Check color="#fff" size={16} />
-                        </View>
-                      ) : (
-                        <View className="bg-brand/15 h-7 w-7 items-center justify-center rounded-full">
-                          <Plus color="#2563FF" size={16} />
-                        </View>
-                      )}
-                    </GlassCard>
-                  </Pressable>
-                </Animated.View>
-              );
-            })}
+                    ) : (
+                      <Text
+                        style={{
+                          color: colors.brand,
+                          fontFamily: 'Inter_600SemiBold',
+                          fontSize: 13,
+                        }}
+                      >
+                        Connect
+                      </Text>
+                    )}
+                  </GlassCard>
+                </Pressable>
+              </Animated.View>
+            );
+          })}
+
+          <View className="mt-4 flex-row items-start gap-2 px-1">
+            <Lock color={colors.sky} size={16} />
+            <Text
+              style={{
+                color: colors.muted,
+                fontFamily: 'Inter_400Regular',
+                fontSize: 12,
+                flex: 1,
+                lineHeight: 18,
+              }}
+            >
+              End-to-end encryption. OAuth tokens stay in secure storage — the Security Agent
+              validates permissions before any MCP tool runs.
+            </Text>
           </View>
         </ScrollView>
 
-        <View style={{ paddingBottom: insets.bottom + 12 }} className="gap-2 px-5 pt-2">
-          <RelayButton label={connected.length > 0 ? 'Continue' : 'Skip for now'} onPress={finish}>
-            <ChevronRight color="#fff" size={18} />
-          </RelayButton>
+        <View style={{ paddingBottom: insets.bottom + 16 }} className="px-5 pt-2">
+          <NeonButton
+            label={connected.length ? 'Continue to Inbox' : 'Skip for now'}
+            variant={connected.length ? 'primary' : 'secondary'}
+            onPress={finish}
+          />
         </View>
       </GradientBackground>
     </View>

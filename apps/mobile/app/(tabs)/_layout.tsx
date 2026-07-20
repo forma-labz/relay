@@ -1,27 +1,32 @@
 import {
   Bot,
-  Contact as ContactIcon,
   FolderClosed,
   Inbox as InboxIcon,
+  MoreHorizontal,
   PenSquare,
-  Settings as SettingsIcon,
+  Users,
 } from 'lucide-react-native';
 import { Platform, Pressable, View } from 'react-native';
 import { Tabs, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useThemeColor } from 'heroui-native';
 
+import { colors } from '@/constants/theme';
 import { haptics } from '@/lib/haptics';
 import { useSettingsStore } from '@/lib/stores/settingsStore';
 
+/**
+ * Primary tabs aligned to product mockups:
+ * Inbox · AI · (Compose FAB) · Files · Team · More(settings)
+ * Compose remains a center FAB that opens Smart Composer.
+ */
 export default function TabLayout() {
   const router = useRouter();
   const theme = useSettingsStore((s) => s.theme);
   const isLight = theme === 'light';
-  const [background, border, accent, muted, surface] = useThemeColor([
+  const [background, border, muted, surface] = useThemeColor([
     'background',
     'border',
-    'accent',
     'muted',
     'surface',
   ]);
@@ -41,13 +46,13 @@ export default function TabLayout() {
             elevation: 0,
             height: Platform.OS === 'ios' ? 88 : 64,
             paddingTop: 6,
-            shadowColor: '#000',
-            shadowOpacity: isLight ? 0.06 : 0,
-            shadowRadius: 12,
+            shadowColor: colors.brandPurple,
+            shadowOpacity: isLight ? 0.06 : 0.12,
+            shadowRadius: 16,
             shadowOffset: { width: 0, height: -2 },
           },
           tabBarLabelStyle: { fontFamily: 'Inter_500Medium', fontSize: 11 },
-          tabBarActiveTintColor: accent,
+          tabBarActiveTintColor: colors.brand,
           tabBarInactiveTintColor: muted,
         }}
       >
@@ -59,10 +64,10 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="contacts"
+          name="ai"
           options={{
-            title: 'Contacts',
-            tabBarIcon: ({ color, size }) => <ContactIcon color={color} size={size ?? 24} />,
+            title: 'AI',
+            tabBarIcon: ({ color, size }) => <Bot color={color} size={size ?? 24} />,
           }}
         />
         <Tabs.Screen
@@ -72,7 +77,7 @@ export default function TabLayout() {
             tabBarButton: () => (
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Compose"
+                accessibilityLabel="Smart Composer"
                 onPress={() => {
                   haptics.medium();
                   router.push('/(tabs)/compose');
@@ -81,10 +86,10 @@ export default function TabLayout() {
               >
                 <View
                   style={{
-                    backgroundColor: accent,
-                    shadowColor: accent,
-                    shadowOpacity: 0.4,
-                    shadowRadius: 12,
+                    backgroundColor: colors.brand,
+                    shadowColor: colors.brandPurple,
+                    shadowOpacity: 0.65,
+                    shadowRadius: 16,
                     shadowOffset: { width: 0, height: 4 },
                   }}
                   className="-mt-6 h-14 w-14 items-center justify-center rounded-full"
@@ -103,19 +108,21 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="ai"
+          name="team"
           options={{
-            title: 'AI',
-            tabBarIcon: ({ color, size }) => <Bot color={color} size={size ?? 24} />,
+            title: 'Team',
+            tabBarIcon: ({ color, size }) => <Users color={color} size={size ?? 24} />,
           }}
         />
         <Tabs.Screen
           name="settings"
           options={{
-            title: 'Settings',
-            tabBarIcon: ({ color, size }) => <SettingsIcon color={color} size={size ?? 24} />,
+            title: 'More',
+            tabBarIcon: ({ color, size }) => <MoreHorizontal color={color} size={size ?? 24} />,
           }}
         />
+        {/* Keep contacts reachable but hidden from tab bar */}
+        <Tabs.Screen name="contacts" options={{ href: null }} />
       </Tabs>
     </>
   );

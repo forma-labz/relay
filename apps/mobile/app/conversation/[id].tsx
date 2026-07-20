@@ -283,7 +283,7 @@ function VoiceNote({ mine, durationSec }: { mine: boolean; durationSec: number }
     ['k', 8],
     ['l', 13],
   ] as const;
-  const color = mine ? '#fff' : '#38BDF8';
+  const color = mine ? '#fff' : '#A855F7';
   return (
     <View className="flex-row items-center gap-2 py-0.5">
       <Play color={color} size={16} fill={color} />

@@ -16,8 +16,8 @@ const day = 86_400_000;
 const iso = (offset: number) => new Date(now - offset).toISOString();
 
 export const AVATAR_COLORS = [
-  '#2563FF',
-  '#6B4EFF',
+  '#6366F1',
+  '#A855F7',
   '#38BDF8',
   '#22C55E',
   '#F59E0B',
@@ -34,7 +34,7 @@ export const contacts: Contact[] = [
     phone: '+1 415 555 0102',
     company: 'Northwind Studio',
     role: 'Creative Director',
-    avatarColor: '#2563FF',
+    avatarColor: '#6366F1',
     initials: 'AO',
     tags: ['Client', 'VIP'],
     notes: 'Prefers async updates. Renewal due Q3.',
@@ -48,7 +48,7 @@ export const contacts: Contact[] = [
     phone: '+1 212 555 0148',
     company: 'Lumen Labs',
     role: 'Head of Product',
-    avatarColor: '#6B4EFF',
+    avatarColor: '#A855F7',
     initials: 'DR',
     tags: ['Partner'],
     notes: 'Introduced by Amara. Interested in the API tier.',
@@ -465,7 +465,7 @@ export const currentUser = {
   name: 'Jordan Avery',
   email: 'jordan@relay.app',
   initials: 'JA',
-  avatarColor: '#2563FF',
+  avatarColor: '#6366F1',
   plan: 'Relay Pro',
 };
 

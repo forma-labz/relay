@@ -23,6 +23,8 @@
     "eas:build": "eas build --platform all --profile preview --non-interactive",
     "eas:build:ios": "eas build --platform ios --profile preview --non-interactive",
     "eas:build:android": "eas build --platform android --profile preview --non-interactive",
+    "eas:build:submit": "eas build --platform all --profile production --auto-submit-with-profile production --non-interactive",
+    "eas:submit": "eas submit --platform all --profile production --latest --non-interactive",
     "eas:update": "eas update --channel preview --non-interactive"
   },
   "dependencies": {

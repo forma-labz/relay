@@ -91,16 +91,27 @@ Quick checks:
 - CI runs format, lint, typecheck, tests, and `expo-doctor` in `apps/mobile`.
 - EAS workflows run from `apps/mobile` after root `npm ci`.
 
-### EAS Build
+### EAS Build and submit
 
 1. Create an Expo project once from the app directory:
    `cd apps/mobile && npx eas-cli init`
 2. Copy the project id into `EXPO_PUBLIC_EAS_PROJECT_ID` (local `.env.local` and GitHub/EAS secrets).
-3. Set GitHub Actions secrets:
+3. Upload store credentials once (`eas credentials` for iOS signing / ASC API key; Play Console service account for Android).
+4. Set GitHub Actions secrets:
    - `EXPO_TOKEN` (Expo access token)
    - `EXPO_PUBLIC_EAS_PROJECT_ID`
    - `EXPO_OWNER` (Expo account/org slug)
+   - `EXPO_ASC_APP_ID` (App Store Connect app id, for iOS submit)
+   - `EXPO_APPLE_TEAM_ID` (Apple Team ID)
+   - `GOOGLE_SERVICE_ACCOUNT_KEY` (raw JSON for Play Console submit)
    - optional app secrets: Supabase, OAuth, `EXPO_PUBLIC_RELAY_API_URL`
-4. Trigger **EAS release** via Actions (`build` / `update` / `submit`) or run locally:
+5. Trigger **EAS release** via Actions:
+   - `build` — queue an EAS Build
+   - `build-and-submit` — build production and auto-submit to TestFlight / Play internal
+   - `submit` — submit the latest finished build
+   - `update` — publish an OTA update
+6. Or run locally from a machine with `EXPO_TOKEN` set:
    - `npm run eas:build -w @relay/mobile`
+   - `npm run eas:build:submit -w @relay/mobile`
+   - `npm run eas:submit -w @relay/mobile`
    - `npm run eas:update -w @relay/mobile`

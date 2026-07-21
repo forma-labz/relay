@@ -1,7 +1,9 @@
 import type { ConfigContext, ExpoConfig } from '@expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
+  const projectId =
+    process.env.EXPO_PUBLIC_EAS_PROJECT_ID ||
+    (config.extra as { eas?: { projectId?: string } } | undefined)?.eas?.projectId;
 
   return {
     ...config,

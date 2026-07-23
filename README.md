@@ -96,6 +96,10 @@ Quick checks:
 
 ### EAS Build and submit
 
+> **Monorepo note:** Always run EAS from `apps/mobile` (or `npm run eas:*` from the repo root).
+> Never run `eas build:configure` at the repository root — it creates a stub `eas.json` and leads to
+> `Failed to read "/eas.json"`.
+
 The Expo project is linked as `652fc2c3-5b20-48d3-9544-782c82e23c72`
 (`apps/mobile/app.json` + `eas.json` build env).
 

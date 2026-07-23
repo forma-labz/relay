@@ -14,6 +14,7 @@
     "android": "npm run android -w @relay/mobile",
     "ios": "npm run ios -w @relay/mobile",
     "web": "npm run web -w @relay/mobile",
+    "eas:ensure": "npm run eas:ensure -w @relay/mobile",
     "eas:build": "npm run eas:build -w @relay/mobile",
     "eas:build:ios": "npm run eas:build:ios -w @relay/mobile",
     "eas:build:android": "npm run eas:build:android -w @relay/mobile",

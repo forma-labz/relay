@@ -6,6 +6,7 @@
   "scripts": {
     "start": "expo start --go",
     "start:go": "expo start --go",
+    "start:go:tunnel": "node ./scripts/start-go-tunnel.mjs",
     "start:go:ngrok": "node ./scripts/start-go-ngrok.mjs",
     "start:dev-client": "EXPO_PLATFORM=native expo start --dev-client",
     "android": "expo run:android",

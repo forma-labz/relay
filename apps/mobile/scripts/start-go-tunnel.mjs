@@ -167,11 +167,12 @@ tunnel.on('error', (err) => {
   );
 });
 
+/** @type {string} */
 let publicUrl;
 try {
   publicUrl = await waitForTunnelUrl(tunnel);
 } catch (err) {
-  fail(err.message);
+  fail(err instanceof Error ? err.message : String(err));
 }
 
 const host = publicUrl.replace(/^https?:\/\//, '');
@@ -219,12 +220,14 @@ try {
   const probeMs = Date.now() - probeStarted;
   console.log(`[start-go-tunnel] Tunnel manifest OK (HTTP ${probe.status} in ${probeMs}ms)`);
 } catch (err) {
-  console.error(`[start-go-tunnel] Pre-warm warning: ${err.message}`);
+  const message = err instanceof Error ? err.message : String(err);
+  console.error(`[start-go-tunnel] Pre-warm warning: ${message}`);
 }
 
+const loadingUrl = `${publicUrl}/_expo/loading`;
 console.log('\n========================================');
 console.log(' Expo Go is ready — open this on your phone:');
 console.log(`   exp://${host}`);
-console.log(`   ${publicUrl}/_expo/loading`);
+console.log(`   ${loadingUrl}`);
 console.log(' Demo mode: any sign-in works (EXPO_PUBLIC_DEMO_MODE=true)');
 console.log('========================================\n');

@@ -65,15 +65,18 @@ personal token is required for reliable Expo Go tunnels.
 
 ## Useful scripts
 
-| Command                    | Description                                |
-| -------------------------- | ------------------------------------------ |
-| `npm start` / `start:go`   | Expo Go dev server (`@relay/mobile`)       |
-| `npm run start:go:ngrok`   | Expo Go via personal ngrok tunnel          |
-| `npm run start:dev-client` | Custom native dev-client Metro             |
-| `npm run api`              | Hono API with watch                        |
-| `npm test`                 | Mobile Jest + API/orchestrator node:test   |
-| `npm run validate`         | Format, lint, typecheck, tests, expo-check |
-| `npm run typecheck`        | All workspaces                             |
+| Command                     | Description                                |
+| --------------------------- | ------------------------------------------ |
+| `npm start` / `start:go`    | Expo Go dev server (`@relay/mobile`)       |
+| `npm run start:go:ngrok`    | Expo Go via personal ngrok tunnel          |
+| `npm run start:dev-client`  | Custom native dev-client Metro             |
+| `npm run eas:build`         | EAS preview build (iOS + Android)          |
+| `npm run eas:build:android` | EAS preview Android APK                    |
+| `npm run eas:build:submit`  | EAS production build + store submit        |
+| `npm run api`               | Hono API with watch                        |
+| `npm test`                  | Mobile Jest + API/orchestrator node:test   |
+| `npm run validate`          | Format, lint, typecheck, tests, expo-check |
+| `npm run typecheck`         | All workspaces                             |
 
 ## Relay AI / MCP
 
@@ -93,13 +96,15 @@ Quick checks:
 
 ### EAS Build and submit
 
-1. Create an Expo project once from the app directory:
-   `cd apps/mobile && npx eas-cli init`
-2. Copy the project id into `EXPO_PUBLIC_EAS_PROJECT_ID` (local `.env.local` and GitHub/EAS secrets).
+The Expo project is linked as `652fc2c3-5b20-48d3-9544-782c82e23c72`
+(`apps/mobile/app.json` + `eas.json` build env).
+
+1. Authenticate once: `eas login` or set `EXPO_TOKEN`.
+2. Set `EXPO_OWNER` to your Expo account/org slug (required for owned projects).
 3. Upload store credentials once (`eas credentials` for iOS signing / ASC API key; Play Console service account for Android).
 4. Set GitHub Actions secrets:
    - `EXPO_TOKEN` (Expo access token)
-   - `EXPO_PUBLIC_EAS_PROJECT_ID`
+   - `EXPO_PUBLIC_EAS_PROJECT_ID` (`652fc2c3-5b20-48d3-9544-782c82e23c72`)
    - `EXPO_OWNER` (Expo account/org slug)
    - `EXPO_ASC_APP_ID` (App Store Connect app id, for iOS submit)
    - `EXPO_APPLE_TEAM_ID` (Apple Team ID)
@@ -110,8 +115,8 @@ Quick checks:
    - `build-and-submit` — build production and auto-submit to TestFlight / Play internal
    - `submit` — submit the latest finished build
    - `update` — publish an OTA update
-6. Or run locally from a machine with `EXPO_TOKEN` set:
-   - `npm run eas:build -w @relay/mobile`
-   - `npm run eas:build:submit -w @relay/mobile`
-   - `npm run eas:submit -w @relay/mobile`
-   - `npm run eas:update -w @relay/mobile`
+6. Or run locally (from repo root or `apps/mobile`):
+   - `npm run eas:build` — preview APK/IPA (Android APK + iOS)
+   - `npm run eas:build:android` / `npm run eas:build:ios`
+   - `npm run eas:build:submit` — production build + store submit
+   - `npm run eas:submit` / `npm run eas:update`

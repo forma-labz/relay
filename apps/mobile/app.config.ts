@@ -1,13 +1,18 @@
 import type { ConfigContext, ExpoConfig } from '@expo/config';
 
+const DEFAULT_EAS_PROJECT_ID = '652fc2c3-5b20-48d3-9544-782c82e23c72';
+
 export default ({ config }: ConfigContext): ExpoConfig => {
-  const projectId = process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
+  const projectId =
+    process.env.EXPO_PUBLIC_EAS_PROJECT_ID ||
+    (config.extra as { eas?: { projectId?: string } } | undefined)?.eas?.projectId ||
+    DEFAULT_EAS_PROJECT_ID;
 
   return {
     ...config,
     name: 'Relay',
     slug: 'relay',
-    owner: process.env.EXPO_OWNER,
+    owner: process.env.EXPO_OWNER || 'relaychat',
     newArchEnabled: true,
     version: process.env.EXPO_APP_VERSION ?? process.env.BILT_APP_VERSION ?? '1.0.0',
     orientation: 'portrait',

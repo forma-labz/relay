@@ -9,7 +9,9 @@
       "node": "22.14.0",
       "env": {
         "EXPO_PLATFORM": "native",
-        "EXPO_PUBLIC_DEMO_MODE": "false"
+        "EXPO_PUBLIC_DEMO_MODE": "false",
+        "EXPO_PUBLIC_EAS_PROJECT_ID": "652fc2c3-5b20-48d3-9544-782c82e23c72",
+        "EXPO_OWNER": "relaychat"
       }
     },
     "development": {

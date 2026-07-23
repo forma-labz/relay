@@ -20,12 +20,13 @@
     "lint:css": "node scripts/lint-css.mjs",
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
-    "eas:build": "eas build --platform all --profile preview --non-interactive",
-    "eas:build:ios": "eas build --platform ios --profile preview --non-interactive",
-    "eas:build:android": "eas build --platform android --profile preview --non-interactive",
-    "eas:build:submit": "eas build --platform all --profile production --auto-submit-with-profile production --non-interactive",
-    "eas:submit": "eas submit --platform all --profile production --latest --non-interactive",
-    "eas:update": "eas update --channel preview --non-interactive"
+    "eas:ensure": "node ./scripts/ensure-eas-json.mjs",
+    "eas:build": "node ./scripts/ensure-eas-json.mjs && eas build --platform all --profile preview --non-interactive",
+    "eas:build:ios": "node ./scripts/ensure-eas-json.mjs && eas build --platform ios --profile preview --non-interactive",
+    "eas:build:android": "node ./scripts/ensure-eas-json.mjs && eas build --platform android --profile preview --non-interactive",
+    "eas:build:submit": "node ./scripts/ensure-eas-json.mjs && eas build --platform all --profile production --auto-submit-with-profile production --non-interactive",
+    "eas:submit": "node ./scripts/ensure-eas-json.mjs && eas submit --platform all --profile production --latest --non-interactive",
+    "eas:update": "node ./scripts/ensure-eas-json.mjs && eas update --channel preview --non-interactive"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "~0.4.2",

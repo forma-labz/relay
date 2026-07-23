@@ -12,7 +12,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: 'Relay',
     slug: 'relay',
-    owner: process.env.EXPO_OWNER,
+    owner: process.env.EXPO_OWNER || 'relaychat',
     newArchEnabled: true,
     version: process.env.EXPO_APP_VERSION ?? process.env.BILT_APP_VERSION ?? '1.0.0',
     orientation: 'portrait',

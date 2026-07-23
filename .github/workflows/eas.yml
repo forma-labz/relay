@@ -81,6 +81,11 @@ jobs:
             exit 1
           fi
           printf '%s\n' "$GOOGLE_SERVICE_ACCOUNT_KEY" > google-service-account.json
+      - name: Verify eas.json in apps/mobile
+        run: |
+          test -f eas.json || { echo "::error::eas.json missing in apps/mobile — do not configure EAS at repo root"; exit 1; }
+          test ! -f ../../eas.json || { echo "::error::Remove stub eas.json from repo root; use apps/mobile/eas.json"; exit 1; }
+          echo "Using $(pwd)/eas.json"
       - name: Verify Expo project config
         run: npx expo config --type public
       - name: Build

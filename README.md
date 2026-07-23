@@ -65,15 +65,18 @@ personal token is required for reliable Expo Go tunnels.
 
 ## Useful scripts
 
-| Command                    | Description                                |
-| -------------------------- | ------------------------------------------ |
-| `npm start` / `start:go`   | Expo Go dev server (`@relay/mobile`)       |
-| `npm run start:go:ngrok`   | Expo Go via personal ngrok tunnel          |
-| `npm run start:dev-client` | Custom native dev-client Metro             |
-| `npm run api`              | Hono API with watch                        |
-| `npm test`                 | Mobile Jest + API/orchestrator node:test   |
-| `npm run validate`         | Format, lint, typecheck, tests, expo-check |
-| `npm run typecheck`        | All workspaces                             |
+| Command                     | Description                                |
+| --------------------------- | ------------------------------------------ |
+| `npm start` / `start:go`    | Expo Go dev server (`@relay/mobile`)       |
+| `npm run start:go:ngrok`    | Expo Go via personal ngrok tunnel          |
+| `npm run start:dev-client`  | Custom native dev-client Metro             |
+| `npm run eas:build`         | EAS preview build (iOS + Android)          |
+| `npm run eas:build:android` | EAS preview Android APK                    |
+| `npm run eas:build:submit`  | EAS production build + store submit        |
+| `npm run api`               | Hono API with watch                        |
+| `npm test`                  | Mobile Jest + API/orchestrator node:test   |
+| `npm run validate`          | Format, lint, typecheck, tests, expo-check |
+| `npm run typecheck`         | All workspaces                             |
 
 ## Relay AI / MCP
 

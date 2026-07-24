@@ -3,76 +3,124 @@
 **Chat Fast. Email Professionally.**
 
 Relay is a premium communication platform that unifies encrypted messaging,
-email, a lightweight CRM, an AI copilot, and secure document management into a
-single Expo React Native app. Built with a glassmorphism, dark-first design
-language inspired by Apple, Linear, Superhuman, Arc, and Notion.
+email, a lightweight CRM, an AI copilot, and secure document management.
+The product UI lives in an Expo app; AI capabilities are orchestrated through
+an MCP-native Hono API (Relay MCP 2.0).
 
-> The workspace UI currently uses realistic seed data. Authentication, secure
-> session persistence, email OAuth boundaries, push registration, and the
-> Supabase schema are production-oriented and require deployed infrastructure
-> and provider credentials before release.
+> The mobile workspace UI still uses realistic seed data for inbox/CRM/files.
+> Auth, secure session persistence, email OAuth boundaries, push registration,
+> and the Supabase schema are production-oriented and require deployed
+> infrastructure before release.
+
+## Monorepo layout
+
+```
+apps/mobile                  Expo Router app (iOS · Android · Web)
+apps/api                     Hono Relay AI Orchestrator
+packages/shared              Zod contracts (MCP, plans, chat API)
+packages/mcp-core            MCP registry, executor, mock servers
+packages/agents              Specialist agents
+supabase/migrations          Postgres schema (messaging + AI memory)
+docs/mcp-2.0.md              Architecture notes
+```
 
 ## Tech stack
 
-- Expo Router 6 (file-based routing) · React 19 · React Native 0.81
-- TypeScript throughout
-- HeroUI Native + Uniwind (Tailwind for RN) for UI and theming
-- Zustand for state (with AsyncStorage persistence where needed)
-- Reanimated 4 + Gesture Handler for animation
-- FlashList for virtualized lists
-- Lucide icons · expo-blur (glass) · expo-linear-gradient · expo-haptics
-
-## Folder structure
-
-```
-app/                         Expo Router screens
-  index.tsx                  Animated splash + routing gate
-  welcome.tsx                Onboarding carousel
-  auth.tsx                   Sign-in (Google/Microsoft/Apple/Phone/Biometric)
-  connect-email.tsx          Link Gmail / Outlook / IMAP
-  search.tsx                 Global search (modal)
-  notifications.tsx          Unified notifications (modal)
-  conversation/[id].tsx      Unified chat + email thread
-  contact/[id].tsx           Full CRM contact profile
-  (tabs)/                    Inbox · Contacts · Compose · Files · AI · Settings
-components/                  Reusable UI (GlassCard, GradientBackground, RelayLogo, …)
-lib/
-  types.ts                   Domain models
-  mockData.ts                Seed data
-  stores/                    Zustand stores (inbox, contacts, files, ai, settings, …)
-  fileIcon.ts, haptics.ts, utils.ts
-global.css                   Design tokens (dark default + light theme)
-```
-
-## Theming
-
-`global.css` owns the palette. Dark is the default; a light theme and `system`
-option are toggled from **Settings → Appearance** and persisted. Brand color is
-`--accent` (#2563FF) with a #6B4EFF secondary and #38BDF8 sky accent.
-
-## Wiring a real backend
-
-- **Auth / DB / Storage:** connect Supabase, then replace the simulated flows in
-  `app/auth.tsx` and the seed data in `lib/mockData.ts` with live queries.
-- **AI:** swap the canned responses in `lib/stores/aiStore.ts` for OpenAI calls.
-- **Email:** integrate Gmail/Outlook/IMAP sync behind the inbox store.
+- **Mobile:** Expo Router 6 · React 19 · RN 0.81 · HeroUI Native · Uniwind · Zustand · Reanimated
+- **API:** Hono · TypeScript · Drizzle schema · in-memory memory store (Postgres-ready)
+- **AI:** Orchestrator + model router (OpenAI / Anthropic / mock) over MCP tools
 
 ## Local setup
 
-1. Copy `.env.example` to `.env.local` and provide the public Supabase/EAS IDs.
-2. Run `npm install`.
-3. Apply `supabase/migrations` to a Supabase project.
-4. Run `npm start` for Expo Go-compatible development, or create a development
-   build for notifications, biometrics, secure storage, and native maps.
+1. `npm install` from the repo root.
+2. Copy [`.env.example`](.env.example) values into `apps/mobile/.env.local` (and set API keys if desired).
+3. Apply `supabase/migrations` to a Supabase project when using a real backend.
+4. Start the API: `npm run api` (default `http://localhost:8787`).
+5. Start Expo Go: `npm start` (set `EXPO_PUBLIC_RELAY_API_URL=http://localhost:8787`).
 
-`EXPO_PUBLIC_DEMO_MODE=true` permits simulated sign-in and account connection
-only in development. Production builds always require real backend sessions.
+### Expo Go feature testing
+
+```bash
+# apps/mobile/.env.local
+EXPO_PUBLIC_DEMO_MODE=true
+EXPO_PUBLIC_RELAY_API_URL=http://localhost:8787
+```
+
+Then run `npm start`, scan the QR code in Expo Go, and use any sign-in button
+(demo mode simulates auth without Supabase). Keep the API running for live AI;
+if it is unreachable, the AI tab falls back to canned local responses.
+
+`npm start` defaults to Expo Go (`expo start --go`). Use
+`npm run start:dev-client` only for custom native development builds.
+
+For a phone outside this machine's LAN, use a personal ngrok tunnel:
+
+```bash
+# https://dashboard.ngrok.com/get-started/your-authtoken
+NGROK_AUTHTOKEN=your_token npm run start:go:ngrok
+```
+
+Expo's shared ngrok account often hits session limits (`ERR_NGROK_108`), so a
+personal token is required for reliable Expo Go tunnels.
+
+## Useful scripts
+
+| Command                     | Description                                |
+| --------------------------- | ------------------------------------------ |
+| `npm start` / `start:go`    | Expo Go dev server (`@relay/mobile`)       |
+| `npm run start:go:ngrok`    | Expo Go via personal ngrok tunnel          |
+| `npm run start:dev-client`  | Custom native dev-client Metro             |
+| `npm run eas:build`         | EAS preview build (iOS + Android)          |
+| `npm run eas:build:android` | EAS preview Android APK                    |
+| `npm run eas:build:submit`  | EAS production build + store submit        |
+| `npm run api`               | Hono API with watch                        |
+| `npm test`                  | Mobile Jest + API/orchestrator node:test   |
+| `npm run validate`          | Format, lint, typecheck, tests, expo-check |
+| `npm run typecheck`         | All workspaces                             |
+
+## Relay AI / MCP
+
+See [docs/mcp-2.0.md](docs/mcp-2.0.md) for the orchestrator, registry, agents,
+memory scopes, and how to add a mock MCP server.
+
+Quick checks:
+
+- `GET /health`
+- `GET /v1/mcp/servers`
+- `POST /v1/ai/chat` `{ "message": "Send John the latest proposal and arrange a meeting." }`
 
 ## Validation and release
 
-- `npm run validate` runs formatting, lint, CSS lint, TypeScript, unit tests,
-  and Expo dependency checks.
-- `eas.json` defines development, preview, internal, simulator, and production
-  profiles.
-- CI validates every pull request. The manually dispatched EAS workflow builds,
-  submits, or publishes an update using the repository `EXPO_TOKEN` secret.
+- CI runs format, lint, typecheck, tests, and `expo-doctor` in `apps/mobile`.
+- EAS workflows run from `apps/mobile` after root `npm ci`.
+
+### EAS Build and submit
+
+> **Monorepo note:** Always run EAS from `apps/mobile` (or `npm run eas:*` from the repo root).
+> Never run `eas build:configure` at the repository root — it creates a stub `eas.json` and leads to
+> `Failed to read "/eas.json"`.
+
+The Expo project is linked as `652fc2c3-5b20-48d3-9544-782c82e23c72`
+(`apps/mobile/app.json` + `eas.json` build env).
+
+1. Authenticate once: `eas login` or set `EXPO_TOKEN`.
+2. Set `EXPO_OWNER` to your Expo account/org slug (required for owned projects).
+3. Upload store credentials once (`eas credentials` for iOS signing / ASC API key; Play Console service account for Android).
+4. Set GitHub Actions secrets:
+   - `EXPO_TOKEN` (Expo access token)
+   - `EXPO_PUBLIC_EAS_PROJECT_ID` (`652fc2c3-5b20-48d3-9544-782c82e23c72`)
+   - `EXPO_OWNER` (Expo account/org slug)
+   - `EXPO_ASC_APP_ID` (App Store Connect app id, for iOS submit)
+   - `EXPO_APPLE_TEAM_ID` (Apple Team ID)
+   - `GOOGLE_SERVICE_ACCOUNT_KEY` (raw JSON for Play Console submit)
+   - optional app secrets: Supabase, OAuth, `EXPO_PUBLIC_RELAY_API_URL`
+5. Trigger **EAS release** via Actions:
+   - `build` — queue an EAS Build
+   - `build-and-submit` — build production and auto-submit to TestFlight / Play internal
+   - `submit` — submit the latest finished build
+   - `update` — publish an OTA update
+6. Or run locally (from repo root or `apps/mobile`):
+   - `npm run eas:build` — preview APK/IPA (Android APK + iOS)
+   - `npm run eas:build:android` / `npm run eas:build:ios`
+   - `npm run eas:build:submit` — production build + store submit
+   - `npm run eas:submit` / `npm run eas:update`

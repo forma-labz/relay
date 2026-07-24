@@ -4,19 +4,39 @@ on:
   workflow_dispatch:
     inputs:
       action:
+        description: build submits to EAS; build-and-submit also sends store uploads after the build
         type: choice
-        options: [build, update, submit]
+        options: [build, build-and-submit, update, submit]
         required: true
       profile:
         type: choice
         options: [development, preview, internal, simulator, production]
-        default: preview
+        default: production
+        required: true
+      platform:
+        type: choice
+        options: [all, ios, android]
+        default: all
         required: true
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: apps/mobile
+    env:
+      EXPO_PLATFORM: native
+      EXPO_PUBLIC_EAS_PROJECT_ID: ${{ secrets.EXPO_PUBLIC_EAS_PROJECT_ID }}
+      EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+      EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+      EXPO_PUBLIC_RELAY_API_URL: ${{ secrets.EXPO_PUBLIC_RELAY_API_URL }}
+      EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID }}
+      EXPO_PUBLIC_MICROSOFT_CLIENT_ID: ${{ secrets.EXPO_PUBLIC_MICROSOFT_CLIENT_ID }}
+      EXPO_OWNER: ${{ secrets.EXPO_OWNER }}
+      EXPO_ASC_APP_ID: ${{ secrets.EXPO_ASC_APP_ID }}
+      EXPO_APPLE_TEAM_ID: ${{ secrets.EXPO_APPLE_TEAM_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,13 +47,77 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
+        working-directory: .
+      - name: Verify required Expo secrets
+        run: |
+          missing=0
+          for key in EXPO_TOKEN EXPO_PUBLIC_EAS_PROJECT_ID EXPO_OWNER; do
+            # EXPO_TOKEN is injected by expo-github-action; others come from job env.
+            if [ "$key" = "EXPO_TOKEN" ]; then
+              if [ -z "${{ secrets.EXPO_TOKEN }}" ]; then
+                echo "::error::$key GitHub secret is not set"
+                missing=1
+              fi
+            elif [ -z "${!key}" ]; then
+              echo "::error::$key GitHub secret is not set"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
+          echo "Required Expo secrets are present."
+      - name: Write Google Play service account key
+        if: >-
+          (inputs.action == 'submit' || inputs.action == 'build-and-submit') &&
+          (inputs.platform == 'android' || inputs.platform == 'all')
+        env:
+          GOOGLE_SERVICE_ACCOUNT_KEY: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY }}
+        run: |
+          if [ -z "$GOOGLE_SERVICE_ACCOUNT_KEY" ]; then
+            echo "::error::GOOGLE_SERVICE_ACCOUNT_KEY secret is required for Android submit"
+            exit 1
+          fi
+          printf '%s\n' "$GOOGLE_SERVICE_ACCOUNT_KEY" > google-service-account.json
+      - name: Verify eas.json in apps/mobile
+        run: |
+          test -f eas.json || { echo "::error::eas.json missing in apps/mobile — do not configure EAS at repo root"; exit 1; }
+          test ! -f ../../eas.json || { echo "::error::Remove stub eas.json from repo root; use apps/mobile/eas.json"; exit 1; }
+          echo "Using $(pwd)/eas.json"
+      - name: Verify Expo project config
+        run: npx expo config --type public
       - name: Build
         if: inputs.action == 'build'
-        run: eas build --platform all --profile "${{ inputs.profile }}" --non-interactive
+        run: >
+          eas build
+          --platform "${{ inputs.platform }}"
+          --profile "${{ inputs.profile }}"
+          --non-interactive
+      - name: Build and submit
+        if: inputs.action == 'build-and-submit'
+        run: >
+          eas build
+          --platform "${{ inputs.platform }}"
+          --profile "${{ inputs.profile }}"
+          --auto-submit-with-profile production
+          --non-interactive
       - name: Update
         if: inputs.action == 'update'
-        run: eas update --channel "${{ inputs.profile }}" --message "${{ github.sha }}" --non-interactive
-      - name: Submit
+        run: >
+          eas update
+          --channel "${{ inputs.profile }}"
+          --message "${{ github.sha }}"
+          --non-interactive
+      - name: Submit latest build
         if: inputs.action == 'submit'
-        run: eas submit --platform all --profile production --latest --non-interactive
+        run: >
+          eas submit
+          --platform "${{ inputs.platform }}"
+          --profile production
+          --latest
+          --non-interactive
+      - name: Cleanup Google credentials
+        if: always()
+        run: rm -f google-service-account.json

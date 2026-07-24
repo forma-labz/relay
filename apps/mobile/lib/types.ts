@@ -105,3 +105,9 @@ export interface ConnectedAccount {
 
 export type InboxFilter = 'all' | 'unread' | 'chat' | 'email' | 'pinned';
 export type ThemePref = 'dark' | 'light' | 'system';
+
+export type SubscriptionPlan = 'Free' | 'Pro' | 'Business';
+export type BillingPeriod = 'monthly' | 'yearly';
+
+export type SecureRelayStatus = 'protected' | 'limited' | 'disconnected';
+export type SecureRelayRegion = 'us' | 'eu' | 'apac';

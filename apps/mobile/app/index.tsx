@@ -59,7 +59,7 @@ function Particle({ x, y, size, delay }: (typeof PARTICLES)[number]) {
           width: size,
           height: size,
           borderRadius: size,
-          backgroundColor: '#E9D5FF',
+          backgroundColor: colors.sky,
         },
         style,
       ]}
@@ -150,7 +150,7 @@ export default function SplashScreen() {
                   paddingVertical: 4,
                 }}
               >
-                Chat fast. Email professionally.
+                Chat Fast. Email Professionally.
               </Text>
             </LinearGradient>
           </Animated.View>

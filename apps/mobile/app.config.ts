@@ -22,7 +22,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
-      backgroundColor: '#0B142E',
+      backgroundColor: '#070B17',
     },
     runtimeVersion: {
       policy: 'appVersion',
@@ -50,7 +50,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#2563FF',
+        backgroundColor: '#2D6BFF',
       },
       package: process.env.EXPO_ANDROID_PACKAGE ?? 'com.formalabz.relay',
       permissions: ['USE_BIOMETRIC', 'RECORD_AUDIO', 'POST_NOTIFICATIONS'],
@@ -98,7 +98,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       [
         'expo-splash-screen',
         {
-          backgroundColor: '#0B142E',
+          backgroundColor: '#070B17',
           image: './assets/splash-icon.png',
           imageWidth: 200,
         },

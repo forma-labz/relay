@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { colors, radii } from '@/constants/theme';
 import { cn } from '@/lib/utils';
 
 interface RelayButtonProps {
@@ -32,7 +33,7 @@ export function RelayButton({
       : variant === 'secondary'
         ? 'border-glass-border bg-surface-2 border'
         : 'bg-transparent';
-  const labelColor = variant === 'primary' ? '#FFFFFF' : '#94A3B8';
+  const labelColor = variant === 'primary' ? colors.foreground : colors.muted;
 
   return (
     <Pressable
@@ -40,11 +41,12 @@ export function RelayButton({
       accessibilityLabel={accessibilityLabel ?? label}
       onPress={onPress}
       className={cn(
-        'min-h-12 flex-row items-center justify-center gap-2 rounded-2xl px-5 active:opacity-75',
+        'min-h-12 flex-row items-center justify-center gap-2 px-5 active:opacity-75',
         background,
         iconOnly && 'h-12 w-12 px-0',
         className,
       )}
+      style={{ borderRadius: radii.button }}
     >
       <View className="flex-row items-center justify-center gap-2">
         {children}

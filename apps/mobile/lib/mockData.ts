@@ -16,13 +16,13 @@ const day = 86_400_000;
 const iso = (offset: number) => new Date(now - offset).toISOString();
 
 export const AVATAR_COLORS = [
-  '#6366F1',
-  '#A855F7',
+  '#2D6BFF',
+  '#8B5CF6',
   '#38BDF8',
-  '#22C55E',
-  '#F59E0B',
-  '#EF4444',
-  '#EC4899',
+  '#16C784',
+  '#F5A524',
+  '#F04438',
+  '#6B4EFF',
   '#14B8A6',
 ];
 
@@ -34,7 +34,7 @@ export const contacts: Contact[] = [
     phone: '+1 415 555 0102',
     company: 'Northwind Studio',
     role: 'Creative Director',
-    avatarColor: '#6366F1',
+    avatarColor: '#2D6BFF',
     initials: 'AO',
     tags: ['Client', 'VIP'],
     notes: 'Prefers async updates. Renewal due Q3.',
@@ -48,7 +48,7 @@ export const contacts: Contact[] = [
     phone: '+1 212 555 0148',
     company: 'Lumen Labs',
     role: 'Head of Product',
-    avatarColor: '#A855F7',
+    avatarColor: '#8B5CF6',
     initials: 'DR',
     tags: ['Partner'],
     notes: 'Introduced by Amara. Interested in the API tier.',
@@ -75,7 +75,7 @@ export const contacts: Contact[] = [
     phone: '+1 646 555 0199',
     company: 'BrightPath',
     role: 'Founder',
-    avatarColor: '#22C55E',
+    avatarColor: '#16C784',
     initials: 'ML',
     tags: ['Lead'],
     notes: 'Cold outreach, warm response.',
@@ -88,7 +88,7 @@ export const contacts: Contact[] = [
     email: 'priya@vertex.design',
     company: 'Vertex Design',
     role: 'Design Lead',
-    avatarColor: '#F59E0B',
+    avatarColor: '#F5A524',
     initials: 'PN',
     tags: ['Vendor'],
     favorite: false,
@@ -465,8 +465,8 @@ export const currentUser = {
   name: 'Jordan Avery',
   email: 'jordan@relay.app',
   initials: 'JA',
-  avatarColor: '#6366F1',
-  plan: 'Relay Pro',
+  avatarColor: '#2D6BFF',
+  plan: 'Free',
 };
 
 export function getContact(id: string): Contact | undefined {

@@ -10,6 +10,7 @@ import {
   Mail,
   Monitor,
   Moon,
+  Network,
   Shield,
   Sun,
   UserCog,
@@ -22,9 +23,12 @@ import { Switch, useThemeColor } from 'heroui-native';
 import { GradientBackground } from '@/components/GradientBackground';
 import { InitialsAvatar } from '@/components/InitialsAvatar';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { StatusBadge } from '@/components/StatusBadge';
+import { colors } from '@/constants/theme';
 import { currentUser } from '@/lib/mockData';
 import { haptics } from '@/lib/haptics';
 import { useOnboardingStore } from '@/lib/stores/onboardingStore';
+import { useSecureRelayStore } from '@/lib/stores/secureRelayStore';
 import { useSettingsStore } from '@/lib/stores/settingsStore';
 import type { ThemePref } from '@/lib/types';
 
@@ -34,11 +38,17 @@ const THEME_OPTIONS: { value: ThemePref; label: string; icon: LucideIcon }[] = [
   { value: 'system', label: 'System', icon: Monitor },
 ];
 
+function planLabel(plan: string) {
+  if (plan === 'Free') return 'Free';
+  return `Relay ${plan}`;
+}
+
 export default function SettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [foreground, muted, accent] = useThemeColor(['foreground', 'muted', 'accent']);
   const s = useSettingsStore();
+  const relayStatus = useSecureRelayStore((state) => state.status);
   const signOut = useOnboardingStore((state) => state.signOut);
 
   return (
@@ -49,7 +59,6 @@ export default function SettingsScreen() {
           contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: insets.bottom + 24 }}
           showsVerticalScrollIndicator={false}
         >
-          {/* Profile */}
           <Animated.View entering={FadeInDown.duration(400)}>
             <Pressable
               onPress={haptics.selection}
@@ -79,7 +88,7 @@ export default function SettingsScreen() {
                     style={{ color: accent, fontFamily: 'Inter_600SemiBold' }}
                     className="text-[11px]"
                   >
-                    {currentUser.plan}
+                    {planLabel(s.plan)}
                   </Text>
                 </View>
               </View>
@@ -87,7 +96,6 @@ export default function SettingsScreen() {
             </Pressable>
           </Animated.View>
 
-          {/* Appearance */}
           <Section title="Appearance">
             <View className="flex-row gap-2 p-3">
               {THEME_OPTIONS.map((opt) => {
@@ -116,13 +124,12 @@ export default function SettingsScreen() {
             </View>
           </Section>
 
-          {/* Connected accounts */}
           <Section title="Connected accounts">
             {s.accounts.map((acc, i) => (
               <Row
                 key={acc.id}
                 icon={Mail}
-                iconColor="#6B4EFF"
+                iconColor={colors.brandSecondary}
                 label={acc.email}
                 sub={`${acc.provider.toUpperCase()} · ${acc.status}`}
                 last={i === s.accounts.length - 1}
@@ -130,44 +137,72 @@ export default function SettingsScreen() {
             ))}
           </Section>
 
-          {/* Security */}
           <Section title="Security & privacy">
             <ToggleRow
               icon={Lock}
-              iconColor="#22C55E"
+              iconColor={colors.success}
               label="End-to-end encryption"
               value={s.encryptionEnabled}
               onToggle={() => s.toggle('encryptionEnabled')}
             />
             <ToggleRow
               icon={Shield}
-              iconColor="#38BDF8"
+              iconColor={colors.sky}
               label="Biometric unlock"
               value={s.biometricsEnabled}
               onToggle={() => s.toggle('biometricsEnabled')}
             />
-            <Row icon={Shield} iconColor="#94A3B8" label="Privacy policy" last />
+            <Pressable
+              onPress={() => {
+                haptics.selection();
+                router.push('/secure-relay');
+              }}
+              className="border-glass-border flex-row items-center gap-3 border-b px-4 py-3.5 active:opacity-70"
+            >
+              <View
+                style={{ backgroundColor: 'rgba(45,107,255,0.12)' }}
+                className="h-9 w-9 items-center justify-center rounded-xl"
+              >
+                <Network color={colors.brand} size={17} strokeWidth={2} />
+              </View>
+              <View className="flex-1">
+                <Text
+                  style={{ color: foreground, fontFamily: 'Inter_500Medium' }}
+                  className="text-[14px]"
+                >
+                  Secure Relay Network
+                </Text>
+                <Text
+                  style={{ color: muted, fontFamily: 'Inter_400Regular' }}
+                  className="text-[12px]"
+                >
+                  Encrypted enterprise tunnel
+                </Text>
+              </View>
+              <StatusBadge status={relayStatus} />
+              <ChevronRight color={muted} size={18} />
+            </Pressable>
+            <Row icon={Shield} iconColor={colors.muted} label="Privacy policy" last />
           </Section>
 
-          {/* Notifications */}
           <Section title="Notifications">
             <ToggleRow
               icon={Mail}
-              iconColor="#6B4EFF"
+              iconColor={colors.brandSecondary}
               label="Email notifications"
               value={s.emailNotifications}
               onToggle={() => s.toggle('emailNotifications')}
             />
             <ToggleRow
               icon={Bell}
-              iconColor="#F59E0B"
+              iconColor={colors.warning}
               label="Message notifications"
               value={s.messageNotifications}
               onToggle={() => s.toggle('messageNotifications')}
             />
             <ToggleRow
               icon={Bell}
-              iconColor="#2563FF"
+              iconColor={colors.brand}
               label="Task reminders"
               value={s.taskReminders}
               onToggle={() => s.toggle('taskReminders')}
@@ -175,11 +210,10 @@ export default function SettingsScreen() {
             />
           </Section>
 
-          {/* MCP & Account */}
           <Section title="MCP & integrations">
             <Row
               icon={Database}
-              iconColor="#6366F1"
+              iconColor={colors.brand}
               label="MCP Registry"
               sub="Gmail, Calendar, Slack, Drive…"
               onPress={() => {
@@ -189,7 +223,7 @@ export default function SettingsScreen() {
             />
             <Row
               icon={Mail}
-              iconColor="#A855F7"
+              iconColor={colors.brandPurple}
               label="Connect accounts"
               onPress={() => {
                 haptics.selection();
@@ -202,16 +236,21 @@ export default function SettingsScreen() {
           <Section title="Account">
             <Row
               icon={CreditCard}
-              iconColor="#F59E0B"
+              iconColor={colors.warning}
               label="Subscription"
-              sub={currentUser.plan}
+              sub={planLabel(s.plan)}
               onPress={() => {
                 haptics.selection();
                 router.push('/paywall');
               }}
             />
-            <Row icon={Database} iconColor="#38BDF8" label="Storage" sub="4.2 GB of 50 GB used" />
-            <Row icon={UserCog} iconColor="#A855F7" label="Manage profile" last />
+            <Row
+              icon={Database}
+              iconColor={colors.sky}
+              label="Storage"
+              sub="4.2 GB of 50 GB used"
+            />
+            <Row icon={UserCog} iconColor={colors.brandPurple} label="Manage profile" last />
           </Section>
 
           <Animated.View entering={FadeInDown.delay(120).duration(400)}>
@@ -223,9 +262,9 @@ export default function SettingsScreen() {
               }}
               className="border-glass-border bg-surface mt-2 flex-row items-center justify-center gap-2 rounded-2xl border py-3.5 active:opacity-70"
             >
-              <LogOut color="#EF4444" size={18} />
+              <LogOut color={colors.error} size={18} />
               <Text
-                style={{ color: '#EF4444', fontFamily: 'Inter_600SemiBold' }}
+                style={{ color: colors.error, fontFamily: 'Inter_600SemiBold' }}
                 className="text-[15px]"
               >
                 Sign out
@@ -284,7 +323,7 @@ function Row({
       className={`flex-row items-center gap-3 px-4 py-3.5 active:opacity-70 ${last ? '' : 'border-glass-border border-b'}`}
     >
       <View
-        style={{ backgroundColor: iconColor + '1F' }}
+        style={{ backgroundColor: `${iconColor}1F` }}
         className="h-9 w-9 items-center justify-center rounded-xl"
       >
         <Icon color={iconColor} size={17} />
@@ -325,7 +364,7 @@ function ToggleRow({
       className={`flex-row items-center gap-3 px-4 py-3 ${last ? '' : 'border-glass-border border-b'}`}
     >
       <View
-        style={{ backgroundColor: iconColor + '1F' }}
+        style={{ backgroundColor: `${iconColor}1F` }}
         className="h-9 w-9 items-center justify-center rounded-xl"
       >
         <Icon color={iconColor} size={17} />

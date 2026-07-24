@@ -3,6 +3,7 @@ import { Pressable, Text, View } from 'react-native';
 import { useThemeColor } from 'heroui-native';
 
 import { InitialsAvatar } from '@/components/InitialsAvatar';
+import { colors } from '@/constants/theme';
 import type { Contact, Conversation } from '@/lib/types';
 import { relativeTime } from '@/lib/utils';
 
@@ -27,7 +28,7 @@ export function ConversationRow({ conversation, contact, onPress }: Conversation
       <View>
         <InitialsAvatar initials={contact.initials} color={contact.avatarColor} size={52} />
         <View
-          style={{ backgroundColor: isEmail ? '#A855F7' : '#22C55E' }}
+          style={{ backgroundColor: isEmail ? colors.brandPurple : colors.success }}
           className="border-background absolute -right-0.5 -bottom-0.5 h-5 w-5 items-center justify-center rounded-full border-2"
         >
           {isEmail ? <Mail color="#fff" size={10} /> : <MessageCircle color="#fff" size={10} />}

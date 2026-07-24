@@ -10,13 +10,13 @@ interface GradientBackgroundProps {
   glow?: boolean;
 }
 
-/** Full-bleed deep-space gradient with optional indigo/purple neon blobs. */
+/** Full-bleed deep-navy gradient with optional blue/purple glow blobs. */
 export function GradientBackground({ children, glow = true }: GradientBackgroundProps) {
   const theme = useSettingsStore((s) => s.theme);
   const isLight = theme === 'light';
 
   const colorsList: [string, string, string] = isLight
-    ? ['#ECE9FF', '#F8F7FC', '#F1F0F8']
+    ? ['#E8EEF8', '#F5F7FB', '#EEF2F8']
     : gradients.hero;
 
   return (

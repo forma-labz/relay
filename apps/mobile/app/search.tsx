@@ -163,7 +163,7 @@ export default function SearchScreen() {
                         {c.channel === 'email' ? (
                           <Mail color="#6B4EFF" size={16} />
                         ) : (
-                          <MessageCircle color="#22C55E" size={16} />
+                          <MessageCircle color="#16C784" size={16} />
                         )}
                       </View>
                       <View className="flex-1">

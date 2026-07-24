@@ -21,9 +21,9 @@ import type { NotificationType } from '@/lib/types';
 import { relativeTime } from '@/lib/utils';
 
 const META: Record<NotificationType, { icon: typeof Mail; color: string; tint: string }> = {
-  message: { icon: MessageCircle, color: '#22C55E', tint: 'rgba(34,197,94,0.16)' },
+  message: { icon: MessageCircle, color: '#16C784', tint: 'rgba(22,199,132,0.16)' },
   email: { icon: Mail, color: '#6B4EFF', tint: 'rgba(107,78,255,0.16)' },
-  task: { icon: ListChecks, color: '#F59E0B', tint: 'rgba(245,158,11,0.16)' },
+  task: { icon: ListChecks, color: '#F5A524', tint: 'rgba(245,165,36,0.16)' },
   calendar: { icon: CalendarClock, color: '#38BDF8', tint: 'rgba(56,189,248,0.16)' },
 };
 

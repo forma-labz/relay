@@ -26,6 +26,7 @@ import { useThemeColor } from 'heroui-native';
 import { GradientBackground } from '@/components/GradientBackground';
 import { InitialsAvatar } from '@/components/InitialsAvatar';
 import { ScreenHeader } from '@/components/ScreenHeader';
+import { colors } from '@/constants/theme';
 import { fileIcon } from '@/lib/fileIcon';
 import { getContact } from '@/lib/mockData';
 import { haptics } from '@/lib/haptics';
@@ -283,7 +284,7 @@ function VoiceNote({ mine, durationSec }: { mine: boolean; durationSec: number }
     ['k', 8],
     ['l', 13],
   ] as const;
-  const color = mine ? '#fff' : '#A855F7';
+  const color = mine ? '#fff' : colors.brandPurple;
   return (
     <View className="flex-row items-center gap-2 py-0.5">
       <Play color={color} size={16} fill={color} />
@@ -373,7 +374,7 @@ function TypingDot({ index }: { index: number }) {
   }));
   return (
     <Animated.View
-      style={[style, { width: 6, height: 6, borderRadius: 3, backgroundColor: '#94A3B8' }]}
+      style={[style, { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.muted }]}
     />
   );
 }

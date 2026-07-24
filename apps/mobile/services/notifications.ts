@@ -32,7 +32,7 @@ export async function registerForPushNotifications(): Promise<string | null> {
       name: 'Messages',
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 200],
-      lightColor: '#2563FF',
+      lightColor: '#2D6BFF',
     });
   }
 

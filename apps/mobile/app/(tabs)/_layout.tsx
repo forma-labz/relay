@@ -46,8 +46,8 @@ export default function TabLayout() {
             elevation: 0,
             height: Platform.OS === 'ios' ? 88 : 64,
             paddingTop: 6,
-            shadowColor: colors.brandPurple,
-            shadowOpacity: isLight ? 0.06 : 0.12,
+            shadowColor: colors.brand,
+            shadowOpacity: isLight ? 0.06 : 0.1,
             shadowRadius: 16,
             shadowOffset: { width: 0, height: -2 },
           },
@@ -87,8 +87,8 @@ export default function TabLayout() {
                 <View
                   style={{
                     backgroundColor: colors.brand,
-                    shadowColor: colors.brandPurple,
-                    shadowOpacity: 0.65,
+                    shadowColor: colors.brand,
+                    shadowOpacity: 0.45,
                     shadowRadius: 16,
                     shadowOffset: { width: 0, height: 4 },
                   }}

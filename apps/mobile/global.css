@@ -6,8 +6,8 @@
 @import 'heroui-native/styles';
 
 /*
- * Relay design system — Deep space / cyber-neon (MCP 2.0 mockups)
- * Background #0A0A0A · Accent #6366F1 · Purple #A855F7 · Neon glows
+ * Relay design system — Deep navy / electric blue
+ * Background #070B17 · Primary #2D6BFF · Accent #8B5CF6
  */
 
 @layer base {
@@ -28,51 +28,51 @@
     --cursor-disabled: not-allowed;
 
     --radius: 1rem;
-    --field-radius: 1.25rem;
+    --field-radius: 1rem;
 
-    /* Dark (default) — deep space */
-    --background: oklch(0.12 0.02 280);
+    /* Dark (default) — deep navy */
+    --background: oklch(0.14 0.03 265);
     --foreground: var(--snow);
 
-    --surface: oklch(0.18 0.025 280);
+    --surface: oklch(0.2 0.035 260);
     --surface-foreground: var(--foreground);
 
-    --overlay: oklch(0.2 0.03 280);
+    --overlay: oklch(0.22 0.04 260);
     --overlay-foreground: var(--foreground);
 
-    --muted: oklch(0.7 0.02 265);
-    --scrollbar: oklch(0.45 0.02 280);
+    --muted: oklch(0.74 0.025 255);
+    --scrollbar: oklch(0.45 0.02 260);
 
-    --default: oklch(0.24 0.03 280);
+    --default: oklch(0.26 0.04 260);
     --default-foreground: var(--snow);
 
-    /* Electric indigo #6366F1 */
-    --accent: oklch(0.585 0.222 277);
+    /* Electric blue #2D6BFF */
+    --accent: oklch(0.55 0.21 260);
     --accent-foreground: var(--snow);
 
-    --field-background: oklch(0.22 0.03 280);
+    --field-background: oklch(0.24 0.04 260);
     --field-foreground: var(--foreground);
     --field-placeholder: var(--muted);
     --field-border: transparent;
 
-    --success: oklch(0.72 0.18 150);
+    --success: oklch(0.7 0.16 160);
     --success-foreground: var(--snow);
 
-    --warning: oklch(0.78 0.15 72);
+    --warning: oklch(0.78 0.14 75);
     --warning-foreground: var(--eclipse);
 
-    --danger: oklch(0.63 0.23 25);
+    --danger: oklch(0.62 0.21 25);
     --danger-foreground: var(--snow);
 
-    --segment: oklch(0.24 0.03 280);
+    --segment: oklch(0.26 0.04 260);
     --segment-foreground: var(--foreground);
 
-    --border: oklch(0.28 0.03 280);
-    --separator: oklch(0.26 0.03 280);
+    --border: oklch(0.3 0.03 260);
+    --separator: oklch(0.28 0.03 260);
     --focus: var(--accent);
     --link: var(--accent);
 
-    --backdrop: rgba(4, 4, 10, 0.7);
+    --backdrop: rgba(7, 11, 23, 0.75);
 
     --surface-shadow: 0 0 0 0 transparent inset;
     --overlay-shadow: 0 0 0 0 transparent inset;
@@ -82,39 +82,39 @@
 
   @variant dark {
     :root {
-      --color-background: #0a0a0a;
-      --color-surface: #16161f;
-      --color-surface-2: #1e1e2a;
-      --color-foreground: #f8fafc;
-      --color-foreground-muted: #94a3b8;
-      --color-border: #2a2a3a;
-      --color-brand: #6366f1;
-      --color-brand-2: #a855f7;
+      --color-background: #070b17;
+      --color-surface: #101728;
+      --color-surface-2: #151d33;
+      --color-foreground: #ffffff;
+      --color-foreground-muted: #a4b0c4;
+      --color-border: rgba(255, 255, 255, 0.06);
+      --color-brand: #2d6bff;
+      --color-brand-2: #8b5cf6;
       --color-accent-sky: #38bdf8;
-      --color-success: #22c55e;
-      --color-warning: #f59e0b;
-      --color-error: #ef4444;
-      --color-glass: rgba(22, 22, 31, 0.72);
-      --color-glass-border: rgba(148, 163, 184, 0.18);
+      --color-success: #16c784;
+      --color-warning: #f5a524;
+      --color-error: #f04438;
+      --color-glass: rgba(21, 29, 51, 0.72);
+      --color-glass-border: rgba(255, 255, 255, 0.06);
     }
   }
 
   @variant light {
     :root {
-      --color-background: #f4f4f8;
+      --color-background: #f0f3fa;
       --color-surface: #ffffff;
-      --color-surface-2: #ececf3;
-      --color-foreground: #0a0a0a;
-      --color-foreground-muted: #64748b;
-      --color-border: #e2e2ea;
-      --color-brand: #6366f1;
-      --color-brand-2: #a855f7;
+      --color-surface-2: #e8ecf5;
+      --color-foreground: #070b17;
+      --color-foreground-muted: #5a6780;
+      --color-border: rgba(7, 11, 23, 0.08);
+      --color-brand: #2d6bff;
+      --color-brand-2: #8b5cf6;
       --color-accent-sky: #0ea5e9;
-      --color-success: #16a34a;
+      --color-success: #16c784;
       --color-warning: #d97706;
       --color-error: #dc2626;
       --color-glass: rgba(255, 255, 255, 0.78);
-      --color-glass-border: rgba(15, 16, 32, 0.08);
+      --color-glass-border: rgba(7, 11, 23, 0.08);
     }
   }
 
@@ -122,7 +122,7 @@
   .light {
     color-scheme: light;
 
-    --background: oklch(0.97 0.005 280);
+    --background: oklch(0.96 0.01 260);
     --foreground: var(--eclipse);
 
     --surface: var(--white);
@@ -131,13 +131,13 @@
     --overlay: var(--white);
     --overlay-foreground: var(--foreground);
 
-    --muted: oklch(0.55 0.02 265);
-    --scrollbar: oklch(0.85 0.01 265);
+    --muted: oklch(0.52 0.03 255);
+    --scrollbar: oklch(0.85 0.01 260);
 
-    --default: oklch(0.95 0.005 280);
+    --default: oklch(0.94 0.01 260);
     --default-foreground: var(--eclipse);
 
-    --accent: oklch(0.585 0.222 277);
+    --accent: oklch(0.55 0.21 260);
     --accent-foreground: var(--snow);
 
     --field-background: var(--white);
@@ -148,14 +148,14 @@
     --segment: var(--white);
     --segment-foreground: var(--eclipse);
 
-    --border: oklch(0.92 0.006 280);
-    --separator: oklch(0.92 0.006 280);
+    --border: oklch(0.9 0.01 260);
+    --separator: oklch(0.9 0.01 260);
 
-    --backdrop: rgba(10, 10, 10, 0.4);
+    --backdrop: rgba(7, 11, 23, 0.4);
 
-    --surface-shadow: 0 2px 8px 0 rgba(15, 23, 42, 0.06), 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-    --overlay-shadow: 0 8px 30px 0 rgba(15, 23, 42, 0.12);
-    --field-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --surface-shadow: 0 2px 8px 0 rgba(7, 11, 23, 0.06), 0 1px 2px 0 rgba(7, 11, 23, 0.05);
+    --overlay-shadow: 0 8px 30px 0 rgba(7, 11, 23, 0.12);
+    --field-shadow: 0 1px 2px 0 rgba(7, 11, 23, 0.05);
   }
 }
 

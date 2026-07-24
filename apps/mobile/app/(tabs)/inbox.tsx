@@ -106,7 +106,7 @@ export default function InboxScreen() {
                 <Bell color={foreground} size={19} />
                 {unreadNotifs > 0 && (
                   <View
-                    style={{ backgroundColor: '#EF4444' }}
+                    style={{ backgroundColor: '#F04438' }}
                     className="border-background absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full border"
                   />
                 )}

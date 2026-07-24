@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, Text, type PressableProps, View } from 'react-native';
 
-import { colors, gradients } from '@/constants/theme';
+import { colors, gradients, radii } from '@/constants/theme';
 import { haptics } from '@/lib/haptics';
 
 interface NeonButtonProps extends Omit<PressableProps, 'children'> {
@@ -25,7 +25,8 @@ export function NeonButton({
           haptics.selection();
           onPress?.(e);
         }}
-        className="items-center rounded-2xl px-5 py-3.5 active:opacity-70"
+        className="items-center px-5 py-3.5 active:opacity-70"
+        style={{ borderRadius: radii.button }}
         {...rest}
       >
         <Text style={{ color: colors.muted, fontFamily: 'Inter_600SemiBold', fontSize: 15 }}>
@@ -51,8 +52,9 @@ export function NeonButton({
           style={{
             borderColor: colors.glassBorder,
             backgroundColor: colors.surface,
+            borderRadius: radii.button,
           }}
-          className="items-center rounded-2xl border px-5 py-3.5"
+          className="items-center border px-5 py-3.5"
         >
           <Text style={{ color: colors.foreground, fontFamily: 'Inter_600SemiBold', fontSize: 15 }}>
             {label}
@@ -75,17 +77,17 @@ export function NeonButton({
       {...rest}
     >
       <LinearGradient
-        colors={gradients.brand}
+        colors={gradients.brandSoft}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{
-          borderRadius: 18,
+          borderRadius: radii.button,
           paddingVertical: 15,
           paddingHorizontal: 20,
           alignItems: 'center',
           shadowColor: colors.brand,
-          shadowOpacity: 0.55,
-          shadowRadius: 16,
+          shadowOpacity: 0.35,
+          shadowRadius: 14,
           shadowOffset: { width: 0, height: 6 },
         }}
       >

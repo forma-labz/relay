@@ -26,10 +26,10 @@ import { useContactsStore } from '@/lib/stores/contactsStore';
 import { relativeTime } from '@/lib/utils';
 
 const TIMELINE = [
-  { icon: MessageCircle, color: '#22C55E', label: 'Sent a message', when: '12m ago' },
+  { icon: MessageCircle, color: '#16C784', label: 'Sent a message', when: '12m ago' },
   { icon: Mail, color: '#6B4EFF', label: 'Emailed the revised deck', when: '2h ago' },
-  { icon: FileText, color: '#EF4444', label: 'Shared Relay_Brand_v3.pdf', when: '1d ago' },
-  { icon: CalendarClock, color: '#F59E0B', label: 'Kickoff call completed', when: '3d ago' },
+  { icon: FileText, color: '#F04438', label: 'Shared Relay_Brand_v3.pdf', when: '1d ago' },
+  { icon: CalendarClock, color: '#F5A524', label: 'Kickoff call completed', when: '3d ago' },
 ];
 
 const TASKS = [
@@ -155,10 +155,10 @@ export default function ContactProfile() {
             entering={FadeInDown.delay(80).duration(400)}
             className="border-glass-border bg-surface mb-4 flex-row justify-around rounded-3xl border px-2 py-4"
           >
-            <Action icon={MessageCircle} label="Chat" color="#22C55E" muted={muted} />
+            <Action icon={MessageCircle} label="Chat" color="#16C784" muted={muted} />
             <Action icon={Mail} label="Email" color="#6B4EFF" muted={muted} />
             <Action icon={Phone} label="Call" color="#38BDF8" muted={muted} />
-            <Action icon={CalendarClock} label="Meet" color="#F59E0B" muted={muted} />
+            <Action icon={CalendarClock} label="Meet" color="#F5A524" muted={muted} />
           </Animated.View>
 
           {/* Relationship insight */}

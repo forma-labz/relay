@@ -76,7 +76,7 @@ function Row({
       onPress={() => onPress(provider)}
       className="border-glass-border bg-surface-2/70 flex-row items-center justify-center gap-3 rounded-2xl border py-3.5 active:opacity-70"
     >
-      {pending === provider ? <ActivityIndicator color="#2563FF" /> : glyph}
+      {pending === provider ? <ActivityIndicator color="#2D6BFF" /> : glyph}
       <Text style={{ color: '#F8FAFC', fontFamily: 'Inter_600SemiBold' }} className="text-[15px]">
         {label}
       </Text>
@@ -136,7 +136,7 @@ export default function Auth() {
               Welcome to Relay
             </Text>
             <Text
-              style={{ color: '#94A3B8', fontFamily: 'Inter_400Regular' }}
+              style={{ color: '#A4B0C4', fontFamily: 'Inter_400Regular' }}
               className="mt-1 text-sm"
             >
               Secure access to your unified inbox
@@ -194,10 +194,10 @@ export default function Auth() {
               onPress={() => signIn('biometric')}
               className="border-glass-border bg-brand/15 h-16 w-16 items-center justify-center rounded-full border active:opacity-70"
             >
-              <Fingerprint color="#2563FF" size={30} />
+              <Fingerprint color="#2D6BFF" size={30} />
             </Pressable>
             <Text
-              style={{ color: '#94A3B8', fontFamily: 'Inter_500Medium' }}
+              style={{ color: '#A4B0C4', fontFamily: 'Inter_500Medium' }}
               className="mt-2 text-xs"
             >
               Unlock with Face ID / Touch ID
@@ -210,9 +210,9 @@ export default function Auth() {
           className="mx-5 mb-4 rounded-3xl p-4"
         >
           <View className="flex-row items-center justify-center gap-2">
-            <ShieldCheck color="#22C55E" size={14} />
+            <ShieldCheck color="#16C784" size={14} />
             <Text
-              style={{ color: '#94A3B8', fontFamily: 'Inter_400Regular' }}
+              style={{ color: '#A4B0C4', fontFamily: 'Inter_400Regular' }}
               className="text-[11px]"
             >
               Protected with Signal-grade end-to-end encryption

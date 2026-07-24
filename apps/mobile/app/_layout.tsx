@@ -174,6 +174,9 @@ export default function RootLayout() {
             <Stack.Screen name="contact/[id]" options={{ presentation: 'card' }} />
             <Stack.Screen name="search" options={{ presentation: 'modal' }} />
             <Stack.Screen name="notifications" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="secure-relay" options={{ presentation: 'card' }} />
+            <Stack.Screen name="integrations" options={{ presentation: 'card' }} />
           </Stack>
         </HeroUINativeProvider>
       </AppProviders>
